@@ -1,0 +1,28 @@
+modLoader="javafml" #mandatory
+loaderVersion="[36,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+license="MIT"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+[[mods]] #mandatory
+modId="matylib" #mandatory
+version="${file.jarVersion}" #mandatory
+displayName="MatyLib" #mandatory
+#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
+#logoFile="examplemod.png" #optional
+#credits="Thanks for this example mod goes to Java" #optional
+authors="Matyrobbrt" #optional
+description='''
+
+'''
+[[dependencies.matylib]]
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[36,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.matylib]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"

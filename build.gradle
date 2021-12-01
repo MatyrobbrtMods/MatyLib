@@ -1,0 +1,171 @@
+buildscript {
+    repositories {
+       	maven { url = 'https://maven.parchmentmc.org' }
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+    	classpath 'org.parchmentmc:librarian:1.+'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    }
+}
+
+plugins {
+	id 'org.cadixdev.licenser' version '0.6.1'
+}
+
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+version = '1.0'
+group = 'com.matyrobbrt.lib'
+archivesBaseName = 'matylib'
+
+sourceSets {
+	main {
+		java {
+			srcDirs = [
+				"$rootDir/src/main/java"
+			]
+		}
+		resources {
+			srcDirs = [
+				"$rootDir/src/main/resources",
+				"$rootDir/src/generated/resources"
+			]
+			exclude '.cache'
+		}
+	}
+        
+	test {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+	
+		java {
+			srcDirs = [
+				"$rootDir/src/test/java"
+			]
+		}
+		resources {
+			srcDirs = [
+				"$rootDir/src/test/resources"
+			]
+		}
+	}
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8) 
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+minecraft {
+    mappings channel: 'parchment', version: '2021.10.17-1.16.5'
+    
+    runs {
+        client {
+            workingDirectory project.file('run/client')
+
+            mods {
+                matylib {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run/server')
+
+            mods {
+                matylib {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run/data')
+
+            args '--mod', 'matylib', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                matylib {
+                    source sourceSets.main
+                }
+            }
+        }
+        
+        test {
+        	parent runs.client
+            workingDirectory project.file('run/test')
+			
+			environment 'MOD_CLASSES', 'dummy'
+
+            main 'net.minecraftforge.userdev.LaunchTesting'
+
+            mods {
+           		tests {
+           			source sourceSets.main
+           			source sourceSets.test
+           		}
+            }
+        }
+    }
+}
+
+license {
+	header = file("$rootDir/header.txt")
+	properties {
+        name = 'Matyrobbrt'
+        year = 2021
+    }
+
+	include '**/*.java'
+	
+	style {
+    	java = 'JAVADOC'
+    }
+
+    tasks {
+    	main {
+    		files.from files("$rootDir/src/main/java")
+    	}
+    	test {
+    		files.from files("$rootDir/src/test/java")
+    	}
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.19'
+
+}
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "matylib",
+            "Specification-Vendor": "matyrobbrt",
+            "Specification-Version": "1",
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"matyrobbrt",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar') 
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
