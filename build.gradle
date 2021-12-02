@@ -13,6 +13,8 @@ buildscript {
 plugins {
 	id 'org.cadixdev.licenser' version '0.6.1'
 	id("maven-publish")
+	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version '1.71.4'
 }
 
 
@@ -144,6 +146,30 @@ javadoc {
 	source = [sourceSets.main.allJava]
 	// prevent java 8's strict doclint for javadocs from failing builds
 	options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+task makeChangelog(type: GitChangelogTask) {
+	fromRepo = file("$projectDir")
+	file = file('changelog.html')
+	untaggedName = "Current release ${version}"
+	fromCommit = '2fe051cf727adce1be210a46f778aa8fe031331e'
+	toRef = 'main'
+	templateContent = file('changelog.mustache').getText('UTF-8')
+}
+
+curseforge {
+	apiKey = props.getProperty('CURSEFORGE_KEY')
+	project {
+		id = "${curse_project_id}"
+		changelog = file('changelog.html')
+		changelogType = 'html'
+		releaseType = 'release'
+		addGameVersion "${minecraft_version}"
+	}
+}
+
+afterEvaluate {
+	tasks.curseforge551821.dependsOn makeChangelog
 }
 
 dependencies {
