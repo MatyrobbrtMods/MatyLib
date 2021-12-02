@@ -12,6 +12,7 @@ buildscript {
 
 plugins {
 	id 'org.cadixdev.licenser' version '0.6.1'
+	id("maven-publish")
 }
 
 
@@ -20,9 +21,12 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0'
+version = "${version}"
 group = 'com.matyrobbrt.lib'
-archivesBaseName = 'matylib'
+archivesBaseName = "${mod_id}-${mc_version}"
+
+def props = new Properties()
+file(".env").withInputStream { props.load(it) }
 
 sourceSets {
 	main {
@@ -138,7 +142,6 @@ license {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.19'
-
 }
 
 jar {
@@ -160,12 +163,19 @@ jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = "${mod_id}-${mc_version}"
+            groupId = "com.matyrobbrt"
             artifact jar
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Matyrobbrt/MatyLib")
+            credentials {
+				username = project.findProperty("gpr.user") ?: props.getProperty("GITHUB_USERNAME")
+            	password = project.findProperty("gpr.key") ?: props.getProperty("GITHUB_TOKEN")
+            }
         }
     }
 }
