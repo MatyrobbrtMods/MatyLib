@@ -2,6 +2,7 @@
 A minecraft forge lib that is used by most of my mods.
 
 ## Installing (for modders)
+MatyLib is hosted through https://cloudsmith.io/
 We will add the repository for the library. In the `repositories` block add:
 ```java
 maven {
