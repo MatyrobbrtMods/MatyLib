@@ -11,5 +11,5 @@ maven {
 ```
 From here, things are pretty straightforward. We can define the dependency, in the `dependencies` block using:
 ```java
-implementation fg.deobf("com.matyrobbrt:matylib-${mc_version}:${matylib_version}") // Make sure to define these values in your build.gradle, and make sure that the version you are targetting exists!
+implementation fg.deobf("com.matyrobbrt:matylib-${mc_version}:${matylib_version}") // Make sure to define these values in your gradle.properties, and make sure that the version you are targetting exists!
 ```
