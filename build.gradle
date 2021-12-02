@@ -140,6 +140,12 @@ license {
     }
 }
 
+javadoc {
+	source = [sourceSets.main.allJava]
+	// prevent java 8's strict doclint for javadocs from failing builds
+	options.addStringOption('Xdoclint:none', '-quiet')
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.19'
 }
@@ -158,6 +164,22 @@ jar {
     }
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+	archives jar
+	archives javadocJar
+	archives sourcesJar
+}
+
 jar.finalizedBy('reobfJar') 
 
 publishing {
@@ -165,7 +187,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = "${mod_id}-${mc_version}"
             groupId = "com.matyrobbrt"
-            artifact jar
+            artifacts = [jar, javadocJar, sourcesJar]
         }
     }
     repositories {

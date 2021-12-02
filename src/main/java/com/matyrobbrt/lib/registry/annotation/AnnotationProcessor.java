@@ -84,7 +84,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 /**
  * Handles all of the RegistryAnnotations (all annotations included in this
- * package {@link com.machina.api.annotation.registries}), and {@link Module}
+ * package {@link com.matyrobbrt.lib.registry.annotation}), and {@link Module}
  * annotations (and such it handles {@link IModule}s as well). <br>
  * Any exception that will be caught during the processing <strong>will be
  * thrown back</strong> as a {@link ProcessingException}
