@@ -191,13 +191,21 @@ publishing {
         }
     }
     repositories {
-        maven {
+        /**maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/Matyrobbrt/MatyLib")
             credentials {
 				username = project.findProperty("gpr.user") ?: props.getProperty("GITHUB_USERNAME")
             	password = project.findProperty("gpr.key") ?: props.getProperty("GITHUB_TOKEN")
             }
-        }
+        }**/
+        maven {
+	      name = "cloudsmith"
+	      url = "https://maven.cloudsmith.io/matyrobbrt/matylib/"
+	      credentials {
+                username = props.getProperty("CLOUD_USERNAME")
+                password = props.getProperty("CLOUD_PASSWORD")
+		}
+	}
     }
 }
