@@ -2,7 +2,7 @@
 A minecraft forge lib that is used by most of my mods.
 
 ## Installing (for modders)
-In order to install it, you need to generate a GitHub PTA (Personal Access Token). Use this article for help on how to create it: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+In order to install the lib, you need to generate a GitHub PTA (Personal Access Token). Use this article for help on how to create it: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 We will start by adding our PTA and GitHub username in a `.env` file. (<b>Make sure to not share this file with anyone</b>). Create a file named `.env` in the root directory of your project. Add the following lines in it, but replace the username and the token with your username and PTA (token):
 ```java
 GITHUB_USERNAME = yourGitHubUsername
