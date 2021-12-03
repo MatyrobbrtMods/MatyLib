@@ -1,5 +1,6 @@
 # MatyLib
 A minecraft forge lib that is used by most of my mods.
+[![Latest version of 'matylib-1.16.5' @ Cloudsmith](https://api-prd.cloudsmith.io/v1/badges/version/matyrobbrt/matylib/maven/matylib-1.16.5/latest/a=noarch;xg=com.matyrobbrt/?render=true&show_latest=true)](https://cloudsmith.io/~matyrobbrt/repos/matylib/packages/detail/maven/matylib-1.16.5/latest/a=noarch;xg=com.matyrobbrt/)
 
 ## Installing (for modders)
 We will add the repository for the library. In the `repositories` block add:
