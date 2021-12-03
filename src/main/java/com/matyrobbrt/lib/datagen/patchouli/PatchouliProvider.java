@@ -51,7 +51,13 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
 
-public abstract class PatchouliGenProvider implements IDataProvider {
+/**
+ * Provider for Patchouli Data Generators
+ * 
+ * @author matyrobbrt
+ *
+ */
+public abstract class PatchouliProvider implements IDataProvider {
 
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -64,7 +70,7 @@ public abstract class PatchouliGenProvider implements IDataProvider {
 	public ArrayList<PatchouliEntry> entries = new ArrayList<>();
 	public ArrayList<PatchouliCategory> categories = new ArrayList<>();
 
-	protected PatchouliGenProvider(DataGenerator generator, String modid, String language, String bookName) {
+	protected PatchouliProvider(DataGenerator generator, String modid, String language, String bookName) {
 		this.generator = generator;
 		this.modid = modid;
 		this.language = language;
@@ -163,12 +169,26 @@ public abstract class PatchouliGenProvider implements IDataProvider {
 	@Override
 	public String getName() { return "PatchouliGenProvider"; }
 
+	/**
+	 * Annotate a {@link PatchouliCategory} with this annotation in order to
+	 * register it automatically
+	 * 
+	 * @author matyrobbrt
+	 *
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
 	protected @interface PatchouliCategoryGen {
 
 	}
 
+	/**
+	 * Annotate a {@link PatchouliBook} with this annotation in order to register it
+	 * automatically
+	 * 
+	 * @author matyrobbrt
+	 *
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
 	protected @interface PatchouliBookGen {

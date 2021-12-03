@@ -36,6 +36,13 @@ import com.matyrobbrt.lib.datagen.patchouli.page.IPatchouliPage;
 import net.minecraft.item.Item;
 import net.minecraft.util.IItemProvider;
 
+/**
+ * For information on what all the properties do, please visit the Patchouli
+ * wiki: https://vazkiimods.github.io/Patchouli/
+ * 
+ * @author matyrobbrt
+ *
+ */
 public class PatchouliEntry {
 
 	public String category;

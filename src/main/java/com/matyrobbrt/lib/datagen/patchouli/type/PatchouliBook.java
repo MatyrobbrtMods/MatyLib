@@ -35,6 +35,13 @@ import com.google.gson.JsonObject;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * For information on what all the properties do, please visit the Patchouli
+ * wiki: https://vazkiimods.github.io/Patchouli/
+ * 
+ * @author matyrobbrt
+ *
+ */
 public class PatchouliBook {
 
 	public String name;
@@ -150,9 +157,10 @@ public class PatchouliBook {
 		return book;
 	}
 
-	private void addProperty(JsonObject object, String property, String value) {
-		if (value != null)
+	private static void addProperty(JsonObject object, String property, String value) {
+		if (value != null) {
 			object.addProperty(property, value);
+		}
 	}
 
 }
