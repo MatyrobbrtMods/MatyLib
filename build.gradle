@@ -142,12 +142,34 @@ license {
     }
 }
 
+
+def replaceResources = tasks.register("replaceResources", Copy) {
+	it.outputs.upToDateWhen { false }
+	//Copy it into the build dir
+	it.from(sourceSets.main.resources) {
+		include "META-INF/mods.toml"
+		expand 'version': "${version}"
+	}
+	it.into "$buildDir/resources/main/"
+}
+
+classes.configure {
+	dependsOn(replaceResources)
+}
+
+processResources {
+	duplicatesStrategy(DuplicatesStrategy.FAIL)
+	exclude('META-INF/mods.toml')
+	configure { finalizedBy(replaceResources) }
+}
+
 javadoc {
 	source = [sourceSets.main.allJava]
 	// prevent java 8's strict doclint for javadocs from failing builds
 	options.addStringOption('Xdoclint:none', '-quiet')
 }
 
+/*
 task makeChangelog(type: GitChangelogTask) {
 	fromRepo = file("$projectDir")
 	file = file('changelog.html')
@@ -171,6 +193,7 @@ curseforge {
 afterEvaluate {
 	tasks.curseforge551821.dependsOn makeChangelog
 }
+*/
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.19'
@@ -189,6 +212,8 @@ jar {
         ])
     }
 }
+
+jar.dependsOn(replaceResources)
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
