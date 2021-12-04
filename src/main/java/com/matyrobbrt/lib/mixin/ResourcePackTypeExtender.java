@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourcePackType;
 
 import net.minecraftforge.common.IExtensibleEnum;
 
-@Mixin(ResourcePackType.class)
+@Mixin(value = ResourcePackType.class, priority = 1200)
 public class ResourcePackTypeExtender implements IExtensibleEnum {
 
 	@SuppressWarnings("unused")

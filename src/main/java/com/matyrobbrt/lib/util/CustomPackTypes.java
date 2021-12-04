@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class CustomPackTypes {
 
-	public static final Method CREATE = ObfuscationReflectionHelper.findMethod(ResourcePackType.class, "create",
+	public static final Method CREATE_METHOD = ObfuscationReflectionHelper.findMethod(ResourcePackType.class, "create",
 			String.class, String.class);
 
 }
