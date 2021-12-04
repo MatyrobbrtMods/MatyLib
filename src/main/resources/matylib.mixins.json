@@ -1,0 +1,10 @@
+{
+	"required": true,
+	"package": "com.matyrobbrt.lib.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"refmap": "matylib.refmap.json",
+	"mixins": [
+		"ResourcePackTypeExtender"
+	],
+	"minVersion": "0.8"
+}
