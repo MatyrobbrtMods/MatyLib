@@ -100,9 +100,9 @@ public class AnnotationProcessor {
 
 	protected Function<Block, ItemGroup> autoBlockItemTab = block -> ItemGroup.TAB_MISC;
 
-	protected final HashMap<String, Class<?>> registryClasses = new HashMap<>();
+	protected final HashMap<Class<?>, String> registryClasses = new HashMap<>();
 
-	protected final ArrayList<Class<?>> moduleClasses = new ArrayList<>();
+	protected final HashMap<Class<?>, String> moduleClasses = new HashMap<>();
 	protected final HashMap<ResourceLocation, IModule> modules = new HashMap<>();
 
 	protected Runnable afterInit = () -> {
@@ -182,8 +182,8 @@ public class AnnotationProcessor {
 						Class<?> clazz = Class.forName(data.getClassType().getClassName(), false,
 								getClass().getClassLoader());
 						if (clazz.getAnnotation(RegistryHolder.class).modid().equals(ownerModID)) {
-							if (!registryClasses.containsValue(clazz)) {
-								registryClasses.put(clazz.getAnnotation(RegistryHolder.class).modid(), clazz);
+							if (!registryClasses.containsKey(clazz)) {
+								registryClasses.put(clazz, clazz.getAnnotation(RegistryHolder.class).modid());
 							}
 						}
 					} catch (ClassNotFoundException e) {
@@ -204,8 +204,8 @@ public class AnnotationProcessor {
 								getClass().getClassLoader());
 						RL id = clazz.getAnnotation(Module.class).id();
 						if (id.modid().equals(ownerModID)) {
-							moduleClasses.add(clazz);
-							registryClasses.put(id.modid(), clazz);
+							moduleClasses.put(clazz, id.modid());
+							registryClasses.put(clazz, id.modid());
 							Constructor<?> constructor = clazz.getConstructor();
 							constructor.setAccessible(true);
 							Object instance = constructor.newInstance();
@@ -222,13 +222,10 @@ public class AnnotationProcessor {
 							}
 						}
 					} catch (IllegalAccessError | InstantiationException | IllegalAccessException
-							| NoSuchMethodException | InvocationTargetException e) {
+							| NoSuchMethodException | InvocationTargetException | SecurityException e) {
 						throw new ProcessingException(e);
 					} catch (ClassNotFoundException e) {
 						throw new ProcessingException("A class which is a module was not found!", e);
-					} catch (SecurityException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 				});
 
@@ -238,7 +235,7 @@ public class AnnotationProcessor {
 
 	private void registerItems(final RegistryEvent.Register<Item> event) {
 		registerFieldsWithAnnotation(event, RegisterItem.class, RegisterItem::value, of(ITEMS));
-		AnnotationProcessor.registerFieldsWithAnnotation(Lists.newArrayList(registryClasses.values()), event,
+		AnnotationProcessor.registerFieldsWithAnnotation(Lists.newArrayList(registryClasses.keySet()), event,
 				RegisterBlockItem.class, (classAn, fieldAn, obj) -> {
 					if (obj instanceof BlockItem) { return ((BlockItem) obj).getBlock().getRegistryName(); }
 					throw new ProcessingException("Invalid BlockItem");
@@ -247,7 +244,7 @@ public class AnnotationProcessor {
 	}
 
 	private void registerAutoBIs(final RegistryEvent.Register<Item> event) {
-		ReflectionHelper.getFieldsAnnotatedWith(Lists.newArrayList(registryClasses.values()), AutoBlockItem.class)
+		ReflectionHelper.getFieldsAnnotatedWith(Lists.newArrayList(registryClasses.keySet()), AutoBlockItem.class)
 				.forEach(field -> {
 					try {
 						Object value = field.get(field.getDeclaringClass());
@@ -299,7 +296,7 @@ public class AnnotationProcessor {
 	}
 
 	private void registerRecipeTypes(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
-		ReflectionHelper.getFieldsAnnotatedWith(Lists.newArrayList(registryClasses.values()), RegisterRecipeType.class)
+		ReflectionHelper.getFieldsAnnotatedWith(Lists.newArrayList(registryClasses.keySet()), RegisterRecipeType.class)
 				.forEach(field -> {
 					if (!field.isAccessible()) { return; }
 					try {
@@ -332,17 +329,17 @@ public class AnnotationProcessor {
 				of(RECIPE_SERIALIZERS));
 	}
 
-	private <T extends IForgeRegistryEntry<T>, A extends Annotation> void registerFieldsWithAnnotation(
+	protected <T extends IForgeRegistryEntry<T>, A extends Annotation> void registerFieldsWithAnnotation(
 			final RegistryEvent.Register<T> event, Class<A> annotation, Function<A, String> registryName,
 			Optional<Map<String, List<T>>> outputMap) {
-		AnnotationProcessor.registerFieldsWithAnnotation(Lists.newArrayList(registryClasses.values()), event,
+		AnnotationProcessor.registerFieldsWithAnnotation(Lists.newArrayList(registryClasses.keySet()), event,
 				annotation, (clazz, fieldAn, obj) -> new ResourceLocation(getModID(clazz), registryName.apply(fieldAn)),
 				outputMap);
 	}
 
 	private void registerCustomRegistries(final RegistryEvent.NewRegistry event) {
 		ReflectionHelper
-				.getMethodsAnnotatedWith(Lists.newArrayList(registryClasses.values()), RegisterCustomRegistry.class)
+				.getMethodsAnnotatedWith(Lists.newArrayList(registryClasses.keySet()), RegisterCustomRegistry.class)
 				.forEach(method -> {
 					try {
 						method.invoke(method.getDeclaringClass(), event);

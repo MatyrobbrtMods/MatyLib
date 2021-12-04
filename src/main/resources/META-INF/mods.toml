@@ -4,7 +4,7 @@ license="MIT"
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
 [[mods]] #mandatory
 modId="matylib" #mandatory
-version="1.0.1" #mandatory
+version="1.0.2" #mandatory
 displayName="MatyLib" #mandatory
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
