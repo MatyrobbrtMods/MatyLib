@@ -1,10 +1,10 @@
 /**
- * This file is part of the Machina Minecraft (Java Edition) mod and is licensed
+ * This file is part of the MatyLib Minecraft (Java Edition) mod and is licensed
  * under the MIT license:
  *
  * MIT License
  *
- * Copyright (c) 2021 Machina Team
+ * Copyright (c) 2021 Matyrobbrt
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * If you want to contribute please join https://discord.com/invite/x9Mj63m4QG.
- * More information can be found on Github: https://github.com/Cy4Shot/MACHINA
  */
 
 package com.matyrobbrt.lib.network;
