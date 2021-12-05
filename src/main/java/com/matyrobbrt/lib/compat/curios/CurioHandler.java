@@ -27,6 +27,10 @@
 
 package com.matyrobbrt.lib.compat.curios;
 
+import java.util.function.Predicate;
+
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -34,5 +38,9 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public abstract class CurioHandler {
 
 	protected abstract ICapabilityProvider initCap(ItemStack stack);
+
+	public abstract ItemStack findItem(Item item, LivingEntity entity);
+
+	public abstract ItemStack findItem(Predicate<ItemStack> pred, LivingEntity entity);
 
 }

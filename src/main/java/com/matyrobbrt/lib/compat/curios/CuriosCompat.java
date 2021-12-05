@@ -27,9 +27,13 @@
 
 package com.matyrobbrt.lib.compat.curios;
 
+import java.util.function.Predicate;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -59,6 +63,16 @@ public class CuriosCompat {
 		@Override
 		protected ICapabilityProvider initCap(ItemStack stack) {
 			return null;
+		}
+
+		@Override
+		public ItemStack findItem(Item item, LivingEntity entity) {
+			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public ItemStack findItem(Predicate<ItemStack> pred, LivingEntity entity) {
+			return ItemStack.EMPTY;
 		}
 	}
 

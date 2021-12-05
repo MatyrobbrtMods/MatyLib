@@ -27,6 +27,10 @@
 
 package com.matyrobbrt.lib.compat.curios;
 
+import java.util.function.Predicate;
+
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+
 import com.google.common.collect.Multimap;
 import com.matyrobbrt.lib.capability.SimpleCapabilityProvider;
 import com.matyrobbrt.lib.util.ModIDs;
@@ -41,12 +45,14 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.InterModComms;
+import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
@@ -137,6 +143,18 @@ class CuriosSetup extends CurioHandler {
 	@Override
 	protected ICapabilityProvider initCap(ItemStack stack) {
 		return new SimpleCapabilityProvider<ICurio>(CuriosCapability.ITEM, new Wrapper(stack));
+	}
+
+	@Override
+	public ItemStack findItem(Item item, LivingEntity entity) {
+		return CuriosApi.getCuriosHelper().findEquippedCurio(item, entity).map(ImmutableTriple::getRight)
+				.orElse(ItemStack.EMPTY);
+	}
+
+	@Override
+	public ItemStack findItem(Predicate<ItemStack> pred, LivingEntity entity) {
+		return CuriosApi.getCuriosHelper().findEquippedCurio(pred, entity).map(ImmutableTriple::getRight)
+				.orElse(ItemStack.EMPTY);
 	}
 
 }
