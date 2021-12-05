@@ -14,8 +14,11 @@ From here, things are pretty straightforward. We can define the dependency, in t
 ```java
 implementation fg.deobf("com.matyrobbrt:matylib-${mc_version}:${matylib_version}") // Make sure to define these values in your gradle.properties, and make sure that the version you are targetting exists!
 ```
-
-
+You may want to consider release types as well. Those are:
+- versions prefixed with `a` - alpha releases; somewhat unstable, or not tested in detail
+- versions prefixed with `b` - beta releases; still not very stable, but more stable than alpha; usually includes features that have not been tested seriously 
+- versions without any prefix - full releases; safe to use in production, most features are stable and tested
+## Acknowledgements
 [![Hosted By: Cloudsmith](https://img.shields.io/badge/OSS%20hosting%20by-cloudsmith-blue?logo=cloudsmith&style=for-the-badge)](https://cloudsmith.com)
 
 Package repository hosting is graciously provided by  [Cloudsmith](https://cloudsmith.com).
