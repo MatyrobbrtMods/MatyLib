@@ -30,17 +30,44 @@ package com.matyrobbrt.lib;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.common.MinecraftForge;
+import com.matyrobbrt.lib.compat.top.TheOneProbeCompat;
+import com.matyrobbrt.lib.util.ModIDs;
+
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
 @Mod(MatyLib.MOD_ID)
-public class MatyLib {
+public class MatyLib extends ModSetup {
+
+	private static boolean registered = false;
+
+	public static MatyLib INSTANCE;
+
+	public static boolean patchouliLoaded = false;
 
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MOD_ID = "matylib";
 
 	public MatyLib() {
-		MinecraftForge.EVENT_BUS.register(this);
+		super(MOD_ID);
+		if (!registered) {
+			registered = true;
+			INSTANCE = this;
+		}
+	}
+
+	@Override
+	public void onCommonSetup(final FMLCommonSetupEvent event) {
+		patchouliLoaded = ModList.get().isLoaded(ModIDs.PATCHOULI);
+	}
+
+	@Override
+	public void onInterModEnqueue(InterModEnqueueEvent event) {
+		if (ModList.get().isLoaded(ModIDs.THE_ONE_PROBE)) {
+			TheOneProbeCompat.register();
+		}
 	}
 
 }

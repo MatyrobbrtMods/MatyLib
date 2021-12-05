@@ -84,6 +84,8 @@ minecraft {
         client {
             workingDirectory project.file('run/client')
 			arg "-mixin.config=matylib.mixins.json"
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             mods {
                 matylib {
                     source sourceSets.main
@@ -94,6 +96,8 @@ minecraft {
         server {
             workingDirectory project.file('run/server')
 			arg "-mixin.config=matylib.mixins.json"
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             mods {
                 matylib {
                     source sourceSets.main
@@ -116,6 +120,8 @@ minecraft {
         test {
         	parent runs.client
             workingDirectory project.file('run/test')
+            property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 			
 			environment 'MOD_CLASSES', 'dummy'
 
@@ -205,8 +211,29 @@ afterEvaluate {
 	tasks.curseforge551821.dependsOn makeChangelog
 }
 
+repositories {
+    maven { // Patchouli
+        url "https://maven.blamejared.com"
+    }
+    maven {
+	   	name 'tterrag maven'
+	   	url "http://maven.tterrag.com/"
+	   	allowInsecureProtocol = true
+	}
+	maven {
+        url = "https://maven.theillusivec4.top/"
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.19'
+    
+    implementation fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}") {
+        transitive = false
+    }
+    
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
+	runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
     
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
@@ -251,6 +278,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = "${mod_id}-${mc_version}"
             groupId = "com.matyrobbrt"
+            version = version
             artifacts = [jar, javadocJar, sourcesJar]
         }
     }
