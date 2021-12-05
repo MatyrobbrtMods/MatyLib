@@ -25,16 +25,14 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util;
+package com.matyrobbrt.lib.compat.curios;
 
-import com.matyrobbrt.lib.MatyLib;
+import net.minecraft.item.ItemStack;
 
-public class ModIDs {
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-	public static final String MATY_LIB = MatyLib.MOD_ID;
+public abstract class CurioHandler {
 
-	public static final String PATCHOULI = "patchouli";
-	public static final String THE_ONE_PROBE = "theoneprobe";
-	public static final String CURIOS = "curios";
+	protected abstract ICapabilityProvider initCap(ItemStack stack);
 
 }

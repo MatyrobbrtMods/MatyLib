@@ -25,16 +25,21 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util;
+package com.matyrobbrt.lib.nbt;
 
-import com.matyrobbrt.lib.MatyLib;
+import java.util.function.Function;
 
-public class ModIDs {
+import net.minecraft.nbt.INBT;
 
-	public static final String MATY_LIB = MatyLib.MOD_ID;
+import net.minecraftforge.common.util.INBTSerializable;
 
-	public static final String PATCHOULI = "patchouli";
-	public static final String THE_ONE_PROBE = "theoneprobe";
-	public static final String CURIOS = "curios";
+public class NBTMap<K extends INBTSerializable<DK>, V extends INBTSerializable<DV>, DK extends INBT, DV extends INBT>
+extends BaseNBTMap<K, V, DK, DV> {
+
+	private static final long serialVersionUID = -4312731322694994632L;
+
+	public NBTMap(Function<DK, K> keyDeserializer, Function<DV, V> valueDeserializer) {
+		super(K::serializeNBT, V::serializeNBT, keyDeserializer, valueDeserializer);
+	}
 
 }

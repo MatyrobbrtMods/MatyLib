@@ -241,6 +241,10 @@ dependencies {
     	transitive = false
     })
     
+    implementation fg.deobf(project.dependencies.create("top.theillusivec4.curios:curios-forge:${curios_version}") {
+    	transitive = false
+    })
+    
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 

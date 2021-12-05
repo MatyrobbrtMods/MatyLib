@@ -25,16 +25,33 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util;
+package com.matyrobbrt.lib.command;
 
-import com.matyrobbrt.lib.MatyLib;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class ModIDs {
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 
-	public static final String MATY_LIB = MatyLib.MOD_ID;
+public abstract class BaseCommand {
 
-	public static final String PATCHOULI = "patchouli";
-	public static final String THE_ONE_PROBE = "theoneprobe";
-	public static final String CURIOS = "curios";
+	protected LiteralArgumentBuilder<CommandSource> builder;
+	boolean enabled;
+	int permissionLevel;
+
+	protected BaseCommand(int permissionLevel, boolean enabled) {
+		builder = Commands.literal(getName()).requires(source -> source.hasPermission(permissionLevel));
+		this.enabled = enabled;
+		this.permissionLevel = permissionLevel;
+	}
+
+	public int getPermissionLevel() { return permissionLevel; }
+
+	public LiteralArgumentBuilder<CommandSource> getBuilder() { return builder; }
+
+	public abstract void build(LiteralArgumentBuilder<CommandSource> builder);
+
+	public boolean isEnabled() { return enabled; }
+
+	public abstract String getName();
 
 }

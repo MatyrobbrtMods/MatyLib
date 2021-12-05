@@ -25,16 +25,36 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util;
+package com.matyrobbrt.lib.registry.annotation;
 
-import com.matyrobbrt.lib.MatyLib;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public class ModIDs {
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-	public static final String MATY_LIB = MatyLib.MOD_ID;
+import net.minecraft.entity.ai.attributes.Attribute;
 
-	public static final String PATCHOULI = "patchouli";
-	public static final String THE_ONE_PROBE = "theoneprobe";
-	public static final String CURIOS = "curios";
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
+/**
+ * Registers the {@link Attribute} that is represented by the field that has
+ * this annotation. For the attribute to be registered the class in which the
+ * field is has to be annotated with {@link RegistryHolder}
+ *
+ * @author matyrobbrt
+ *
+ */
+public @interface RegisterAttribute {
+
+	/**
+	 * The registry name of the attribute (the modid is specified by the
+	 * {@link RegistryHolder} on the class the field is in)
+	 *
+	 * @return
+	 */
+	String value();
 
 }

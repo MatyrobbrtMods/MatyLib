@@ -60,6 +60,8 @@ import com.matyrobbrt.lib.util.ReflectionHelper;
 import com.matyrobbrt.lib.util.TriFunction;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -69,6 +71,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.potion.Effect;
+import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -105,9 +108,7 @@ public class AnnotationProcessor {
 	protected final HashMap<Class<?>, String> moduleClasses = new HashMap<>();
 	protected final HashMap<ResourceLocation, IModule> modules = new HashMap<>();
 
-	protected Runnable afterInit = () -> {
-
-	};
+	protected Runnable afterInit = () -> {};
 
 	/**
 	 * Creates a new {@link AnnotationProcessor} which will be used in order to
@@ -154,12 +155,15 @@ public class AnnotationProcessor {
 		modBus.addGenericListener(Block.class, this::registerBlocks);
 		modBus.addGenericListener(ContainerType.class, this::registerContainerTypes);
 		modBus.addGenericListener(Effect.class, this::registerEffects);
+		modBus.addGenericListener(Potion.class, this::registerPotionTypes);
 		modBus.addGenericListener(Fluid.class, this::registerFluids);
 		modBus.addGenericListener(Item.class, this::registerItems);
 		modBus.addGenericListener(ParticleType.class, this::registerParticleTypes);
 		modBus.addGenericListener(SoundEvent.class, this::registerSoundEvents);
+		modBus.addGenericListener(Attribute.class, this::registerAttributes);
 		modBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeTypes);
 		modBus.addGenericListener(TileEntityType.class, this::registerTileEntityTypes);
+		modBus.addGenericListener(EntityType.class, this::registerEntityTypes);
 		modBus.addListener(this::registerCustomRegistries);
 	}
 
@@ -276,13 +280,26 @@ public class AnnotationProcessor {
 		registerFieldsWithAnnotation(event, RegisterEffect.class, RegisterEffect::value, of(EFFECTS));
 	}
 
+	private void registerPotionTypes(final RegistryEvent.Register<Potion> event) {
+		registerFieldsWithAnnotation(event, RegisterPotion.class, RegisterPotion::value, of(POTION_TYPES));
+	}
+
 	private void registerSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
 		registerFieldsWithAnnotation(event, RegisterSoundEvent.class, RegisterSoundEvent::value, of(SOUND_EVENTS));
 	}
 
+	private void registerAttributes(final RegistryEvent.Register<Attribute> event) {
+		registerFieldsWithAnnotation(event, RegisterAttribute.class, RegisterAttribute::value, of(ATTRIBUTES));
+	}
+
+	private void registerEntityTypes(final RegistryEvent.Register<EntityType<?>> event) {
+		registerFieldsWithAnnotation(event, RegisterEntityType.class, RegisterEntityType::value,
+				Optional.of(ENTITY_TYPES));
+	}
+
 	private void registerTileEntityTypes(final RegistryEvent.Register<TileEntityType<?>> event) {
 		registerFieldsWithAnnotation(event, RegisterTileEntityType.class, RegisterTileEntityType::value,
-				Optional.of(MatyLibRegistries.TILE_ENTITY_TYPES));
+				Optional.of(TILE_ENTITY_TYPES));
 	}
 
 	private void registerContainerTypes(final RegistryEvent.Register<ContainerType<?>> event) {

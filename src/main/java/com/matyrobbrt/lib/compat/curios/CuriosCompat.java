@@ -25,56 +25,40 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib;
+package com.matyrobbrt.lib.compat.curios;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.matyrobbrt.lib.compat.curios.CuriosCompat;
-import com.matyrobbrt.lib.compat.top.TheOneProbeCompat;
-import com.matyrobbrt.lib.util.ModIDs;
+import net.minecraft.item.ItemStack;
 
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-@Mod(MatyLib.MOD_ID)
-public class MatyLib extends ModSetup {
+public class CuriosCompat {
 
-	private static boolean registered = false;
-
-	public static MatyLib INSTANCE;
-
-	public static boolean patchouliLoaded = false;
-	public static boolean curiosLoaded = false;
+	public static CurioHandler INSTANCE;
 
 	public static final Logger LOGGER = LogManager.getLogger();
-	public static final String MOD_ID = "matylib";
 
-	public MatyLib() {
-		super(MOD_ID);
-		if (!registered) {
-			registered = true;
-			INSTANCE = this;
-		}
+	private static boolean registered;
+
+	public static void register() {
+		if (registered) { return; }
+		registered = true;
+		CuriosSetup.sendIMC();
+		INSTANCE = new CuriosSetup();
 	}
 
-	@Override
-	public void onCommonSetup(final FMLCommonSetupEvent event) {
-		patchouliLoaded = ModList.get().isLoaded(ModIDs.PATCHOULI);
-		curiosLoaded = ModList.get().isLoaded(ModIDs.CURIOS);
+	public static ICapabilityProvider initBaubleCap(ItemStack stack) {
+		if (INSTANCE != null) { return INSTANCE.initCap(stack); }
+		return null;
 	}
 
-	@Override
-	public void onInterModEnqueue(InterModEnqueueEvent event) {
-		if (ModList.get().isLoaded(ModIDs.THE_ONE_PROBE)) {
-			TheOneProbeCompat.register();
-		}
-		if (ModList.get().isLoaded(ModIDs.CURIOS)) {
-			CuriosCompat.register();
-		} else {
-			CuriosCompat.INSTANCE = new CuriosCompat.DefaultCurioHandler();
+	public static final class DefaultCurioHandler extends CurioHandler {
+
+		@Override
+		protected ICapabilityProvider initCap(ItemStack stack) {
+			return null;
 		}
 	}
 
