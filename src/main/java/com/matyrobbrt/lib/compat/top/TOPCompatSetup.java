@@ -27,36 +27,59 @@
 
 package com.matyrobbrt.lib.compat.top;
 
+import java.util.function.Function;
+
+import org.apache.logging.log4j.Logger;
+
+import com.matyrobbrt.lib.MatyLib;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
-import mcjty.theoneprobe.TheOneProbe;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.IProbeInfoProvider;
+import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 
-/**
- * A base interface for {@link TheOneProbe} info providers. In order to avoid
- * {@link ClassNotFoundException}s any class inheriting this should be
- * independent!
- * 
- * @author matyrobbrt
- *
- */
-public interface ITOPDriver {
+class TOPCompatSetup {
 
-	/**
-	 * Adds info to the probe
-	 * 
-	 * @param probeMode
-	 * @param probeInfo
-	 * @param player
-	 * @param level
-	 * @param blockState
-	 * @param probeData
-	 */
-	void addProbeInfo(ProbeMode probeMode, IProbeInfo probeInfo, PlayerEntity player, World level, BlockState blockState,
-			IProbeHitData probeData);
+	public static class Create implements Function<ITheOneProbe, Void> {
+
+		private final Logger logger;
+
+		public Create(Logger logger) {
+			this.logger = logger;
+		}
+
+		@Override
+		public Void apply(ITheOneProbe theOneProbe) {
+			logger.info("MatyLib: Found The One Probe! Enabled support!");
+			theOneProbe.registerProvider(new Driver());
+			return null;
+		}
+	}
+
+	public static class Driver implements IProbeInfoProvider {
+
+		@Override
+		public String getID() { return MatyLib.INSTANCE.rl("default_driver").toString(); }
+
+		@Override
+		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
+				BlockState blockState, IProbeHitData data) {
+			Block block = blockState.getBlock();
+			if (block instanceof ITOPInfoProvider) {
+				ITOPInfoProvider provider = (ITOPInfoProvider) block;
+				ITOPDriver driver = provider.getTheOneProbeDriver();
+				if (driver != null) {
+					driver.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+				}
+			}
+
+		}
+	}
 
 }

@@ -191,7 +191,7 @@ task makeChangelog(type: GitChangelogTask) {
 	fromRepo = file("$projectDir")
 	file = file('changelog.html')
 	untaggedName = "Current release ${version}"
-	fromCommit = '38943ad30a172c5377d5e4c0c8581479622abb9e'
+	fromCommit = '220e445a2f3dbee26ca5bf1a94a609468e5d5c67'
 	toRef = '1.16.5'
 	templateContent = file('changelog.mustache').getText('UTF-8')
 }
@@ -204,6 +204,9 @@ curseforge {
 		changelogType = 'html'
 		releaseType = 'release'
 		addGameVersion "${mc_version}"
+		relations {
+            optionalLibrary 'the-one-probe'
+        }
 	}
 }
 
@@ -225,6 +228,8 @@ repositories {
     }
 }
 
+configurations.compileOnly.canBeResolved = true
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.19'
     
@@ -232,8 +237,9 @@ dependencies {
         transitive = false
     }
     
-    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
-	runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
+    implementation fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}") {
+    	transitive = false
+    })
     
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
