@@ -34,6 +34,7 @@ import com.matyrobbrt.lib.compat.curios.CuriosCompat;
 import com.matyrobbrt.lib.compat.top.TheOneProbeCompat;
 import com.matyrobbrt.lib.util.ModIDs;
 
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -76,6 +77,9 @@ public class MatyLib extends ModSetup {
 		} else {
 			CuriosCompat.INSTANCE = new CuriosCompat.DefaultCurioHandler();
 		}
+
+		InterModComms.sendTo(MOD_ID, "versions",
+				() -> "https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.16.5/versions.json");
 	}
 
 }
