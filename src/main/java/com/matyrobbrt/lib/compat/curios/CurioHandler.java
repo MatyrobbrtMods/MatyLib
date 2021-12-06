@@ -25,17 +25,22 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util;
+package com.matyrobbrt.lib.compat.curios;
 
-import java.lang.reflect.Method;
+import java.util.function.Predicate;
 
-import net.minecraft.resources.ResourcePackType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class CustomPackTypes {
+public abstract class CurioHandler {
 
-	public static final Method CREATE_METHOD = ObfuscationReflectionHelper.findMethod(ResourcePackType.class, "create",
-			String.class, String.class);
+	protected abstract ICapabilityProvider initCap(ItemStack stack);
+
+	public abstract ItemStack findItem(Item item, LivingEntity entity);
+
+	public abstract ItemStack findItem(Predicate<ItemStack> pred, LivingEntity entity);
 
 }

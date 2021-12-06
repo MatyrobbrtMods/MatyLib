@@ -27,6 +27,9 @@
 
 package com.matyrobbrt.lib;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.matyrobbrt.lib.registry.annotation.AnnotationProcessor;
 
 import net.minecraft.util.ResourceLocation;
@@ -62,9 +65,7 @@ public abstract class ModSetup {
 		modBus.addListener(this::onCommonSetup);
 		modBus.addListener(this::onInterModEnqueue);
 
-		if (clientSetup() != null) {
-			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> this::clientSetup);
-		}
+		clientSetup().ifPresent(sup -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> sup::get));
 
 		if (annotationProcessor() != null) {
 			annotationProcessor().register(modBus);
@@ -78,8 +79,8 @@ public abstract class ModSetup {
 		return new ResourceLocation(modId, name);
 	}
 
-	public ClientSetup clientSetup() {
-		return null;
+	public Optional<Supplier<ClientSetup>> clientSetup() {
+		return Optional.empty();
 	}
 
 	public AnnotationProcessor annotationProcessor() {

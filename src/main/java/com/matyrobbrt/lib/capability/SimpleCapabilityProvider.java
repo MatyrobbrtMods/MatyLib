@@ -25,16 +25,34 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util;
+package com.matyrobbrt.lib.capability;
 
-import com.matyrobbrt.lib.MatyLib;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class ModIDs {
+import net.minecraft.util.Direction;
 
-	public static final String MATY_LIB = MatyLib.MOD_ID;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
-	public static final String PATCHOULI = "patchouli";
-	public static final String THE_ONE_PROBE = "theoneprobe";
-	public static final String CURIOS = "curios";
+public class SimpleCapabilityProvider<C> implements ICapabilityProvider {
+
+	private final C capInstance;
+	private final LazyOptional<C> capOptional;
+
+	private final Capability<C> capability;
+
+	public SimpleCapabilityProvider(Capability<C> capability, C capabilityInstance) {
+		this.capability = capability;
+		this.capInstance = capabilityInstance;
+		this.capOptional = LazyOptional.of(() -> this.capInstance);
+	}
+
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+		return capability.orEmpty(cap, capOptional);
+	}
 
 }

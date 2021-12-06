@@ -25,16 +25,25 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util;
+package com.matyrobbrt.lib.util.extender;
 
-import com.matyrobbrt.lib.MatyLib;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-public class ModIDs {
+import net.minecraft.resources.ResourcePackType;
 
-	public static final String MATY_LIB = MatyLib.MOD_ID;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-	public static final String PATCHOULI = "patchouli";
-	public static final String THE_ONE_PROBE = "theoneprobe";
-	public static final String CURIOS = "curios";
+public class CustomPackTypes {
+
+	public static final Method CREATE_METHOD = ObfuscationReflectionHelper.findMethod(ResourcePackType.class, "create",
+			String.class, String.class);
+
+	public static ResourcePackType create(String name, String directory) {
+		try {
+			return (ResourcePackType) CREATE_METHOD.invoke(null, name, directory);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
+		return null;
+	}
 
 }

@@ -25,16 +25,36 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util;
+package com.matyrobbrt.lib.registry.annotation;
 
-import com.matyrobbrt.lib.MatyLib;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public class ModIDs {
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-	public static final String MATY_LIB = MatyLib.MOD_ID;
+import net.minecraft.potion.Potion;
 
-	public static final String PATCHOULI = "patchouli";
-	public static final String THE_ONE_PROBE = "theoneprobe";
-	public static final String CURIOS = "curios";
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
+/**
+ * Registers the {@link Potion} that is represented by the field that has this
+ * annotation. For the potion to be registered the class in which the field is
+ * has to be annotated with {@link RegistryHolder}
+ *
+ * @author matyrobbrt
+ *
+ */
+public @interface RegisterPotion {
+
+	/**
+	 * The registry name of the potion (the modid is specified by the
+	 * {@link RegistryHolder} on the class the field is in)
+	 *
+	 * @return
+	 */
+	String value();
 
 }
