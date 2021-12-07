@@ -86,14 +86,18 @@ public class SyncValuesMessage implements INetworkMessage {
 	@SuppressWarnings("resource")
 	private static void handleClient(SyncValuesMessage syncValuesMessage, Context context) {
 		ClientWorld client = Minecraft.getInstance().level;
-		client.getBlockEntity(syncValuesMessage.pos).load(client.getBlockState(syncValuesMessage.pos),
-				syncValuesMessage.nbt);
+		if (client.getBlockEntity(syncValuesMessage.pos) != null) {
+			client.getBlockEntity(syncValuesMessage.pos).load(client.getBlockState(syncValuesMessage.pos),
+					syncValuesMessage.nbt);
+		}
 	}
 
 	private static void handleServer(SyncValuesMessage syncValuesMessage, Context context) {
 		ServerWorld server = context.getSender().getLevel();
-		server.getBlockEntity(syncValuesMessage.pos).load(server.getBlockState(syncValuesMessage.pos),
-				syncValuesMessage.nbt);
+		if (server.getBlockEntity(syncValuesMessage.pos) != null) {
+			server.getBlockEntity(syncValuesMessage.pos).load(server.getBlockState(syncValuesMessage.pos),
+					syncValuesMessage.nbt);
+		}
 	}
 
 	public static SyncValuesMessage decode(PacketBuffer buffer) {
