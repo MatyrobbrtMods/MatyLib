@@ -28,11 +28,13 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 @EventBusSubscriber(modid = MatyLib.MOD_ID, bus = Bus.MOD)
 public class VersionManager {
 
-	public static final Map<String, VersionList> MOD_VERSIONS = new HashMap<>();
+	public static final String VERSIONS_METHOD = "versions";
+
+	private static final Map<String, VersionList> MOD_VERSIONS = new HashMap<>();
 
 	@SubscribeEvent
 	public static void processIMC(final InterModProcessEvent event) {
-		event.getIMCStream().forEach(imc -> {
+		event.getIMCStream().filter(msg -> msg.getMethod() == VERSIONS_METHOD).forEach(imc -> {
 			Object msg = imc.getMessageSupplier().get();
 			if (msg instanceof String) {
 				VersionList version = processVersion((String) msg);

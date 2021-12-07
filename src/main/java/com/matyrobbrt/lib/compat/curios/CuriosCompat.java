@@ -51,6 +51,7 @@ public class CuriosCompat {
 		registered = true;
 		CuriosSetup.sendIMC();
 		INSTANCE = new CuriosSetup();
+		LOGGER.info("Found Curios. Enabled support!");
 	}
 
 	public static ICapabilityProvider initBaubleCap(ItemStack stack) {

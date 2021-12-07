@@ -202,7 +202,7 @@ curseforge {
 		id = "${curse_project_id}"
 		changelog = file('changelog.html')
 		changelogType = 'html'
-		releaseType = 'release'
+		releaseType = "${release_type}"
 		addGameVersion "${mc_version}"
 		relations {
             optionalLibrary 'the-one-probe'

@@ -32,7 +32,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.matyrobbrt.lib.compat.curios.CuriosCompat;
 import com.matyrobbrt.lib.compat.top.TheOneProbeCompat;
+import com.matyrobbrt.lib.network.matylib.MatyLibNetwork;
 import com.matyrobbrt.lib.util.ModIDs;
+import com.matyrobbrt.lib.version.VersionManager;
 
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -65,6 +67,8 @@ public class MatyLib extends ModSetup {
 	public void onCommonSetup(final FMLCommonSetupEvent event) {
 		patchouliLoaded = ModList.get().isLoaded(ModIDs.PATCHOULI);
 		curiosLoaded = ModList.get().isLoaded(ModIDs.CURIOS);
+
+		MatyLibNetwork.init();
 	}
 
 	@Override
@@ -78,7 +82,7 @@ public class MatyLib extends ModSetup {
 			CuriosCompat.INSTANCE = new CuriosCompat.DefaultCurioHandler();
 		}
 
-		InterModComms.sendTo(MOD_ID, "versions",
+		InterModComms.sendTo(MOD_ID, VersionManager.VERSIONS_METHOD,
 				() -> "https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.16.5/versions.json");
 	}
 
