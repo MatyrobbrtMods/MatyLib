@@ -41,6 +41,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 /**
  * Base class for mod main classes
@@ -67,8 +68,10 @@ public abstract class ModSetup {
 
 		clientSetup().ifPresent(sup -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> sup::get));
 
-		if (annotationProcessor() != null) {
-			annotationProcessor().register(modBus);
+		AnnotationProcessor ap = annotationProcessor();
+
+		if (ap != null) {
+			ap.register(modBus);
 		}
 
 		forgeBus = MinecraftForge.EVENT_BUS;
@@ -93,4 +96,6 @@ public abstract class ModSetup {
 	public void onInterModEnqueue(final InterModEnqueueEvent event) {
 
 	}
+
+	public static boolean isProduction() { return FMLEnvironment.production; }
 }

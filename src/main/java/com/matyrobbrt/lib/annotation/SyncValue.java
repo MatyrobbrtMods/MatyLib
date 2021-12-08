@@ -36,15 +36,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import com.google.common.collect.ImmutableList;
 import com.matyrobbrt.lib.util.NBTSerializer;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 /**
  * Used to sync values from the server to client and vice-versa in tile entities
@@ -57,6 +61,54 @@ public @interface SyncValue {
 	public final class Helper {
 
 		private static final Map<Class<?>, NBTSerializer<?>> SERIALIZERS = new HashMap<>();
+
+		/**
+		 * Any classes in this (immutable) list CANNOT be registered using
+		 * {@link #registerSerializer(Class, Function, BiConsumer)}! This is in order to
+		 * not make a mod break the other!
+		 */
+		private static final List<Class<?>> BLACKLISTED_REGISTERING = new ImmutableList.Builder<Class<?>>()
+				.add(FluidTank.class).build();
+
+		static {
+			SERIALIZERS.put(FluidTank.class,
+					NBTSerializer.create(nbt -> new FluidTank(nbt.getInt("TankCapacity")), (nbt, tank) -> {
+						tank.writeToNBT(nbt);
+						nbt.putInt("TankCapacity", tank.getCapacity());
+					}));
+		}
+
+		public static boolean serializerExists(Class<?> clazz) {
+			return SERIALIZERS.containsKey(clazz);
+		}
+
+		/**
+		 * Registers a custom serializer for {@link SyncValue}s. Any class in
+		 * {@link #BLACKLISTED_REGISTERING} CANNOT have a serializer registered as they
+		 * will be registered by default!
+		 * 
+		 * @param <T>
+		 * @param clazz
+		 * @param reader
+		 * @param writer
+		 * @return The old serializer, if exists
+		 */
+		public static <T> NBTSerializer<?> registerSerializer(Class<T> clazz, Function<CompoundNBT, T> reader,
+				BiConsumer<CompoundNBT, T> writer) {
+			if (BLACKLISTED_REGISTERING.contains(clazz)) { return null; }
+			return SERIALIZERS.put(clazz, new NBTSerializer<T>() {
+
+				@Override
+				public T read(CompoundNBT nbt) {
+					return reader.apply(nbt);
+				}
+
+				@Override
+				public void write(CompoundNBT nbt, T obj) {
+					writer.accept(nbt, obj);
+				}
+			});
+		}
 
 		/**
 		 * This method will attempt to read a value from NBT and assign that value for
@@ -108,22 +160,6 @@ public @interface SyncValue {
 					}
 				}
 			}
-		}
-
-		public static <T> void registerSerializer(Class<T> clazz, Function<CompoundNBT, T> reader,
-				BiConsumer<CompoundNBT, T> writer) {
-			SERIALIZERS.put(clazz, new NBTSerializer<T>() {
-
-				@Override
-				public T read(CompoundNBT nbt) {
-					return reader.apply(nbt);
-				}
-
-				@Override
-				public void write(CompoundNBT nbt, T obj) {
-					writer.accept(nbt, obj);
-				}
-			});
 		}
 
 		/**

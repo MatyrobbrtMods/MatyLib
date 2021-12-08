@@ -47,4 +47,15 @@ public @interface RegistryHolder {
 	 * @return
 	 */
 	String modid();
+
+	/**
+	 * This value controls if the class which has this annotation should be
+	 * registered to the {@link AnnotationProcessor} <br>
+	 * <strong>BE CAREFUL WITH SWITCHING THIS ON AND OFF BECAUSE IT CAN BREAK
+	 * WORLS</strong>
+	 * 
+	 * @since 1.0.4
+	 * @return true if the {@link AnnotationProcessor} should process the class
+	 */
+	boolean enabled() default true;
 }

@@ -50,6 +50,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 
 @EventBusSubscriber(modid = MatyLib.MOD_ID, bus = Bus.MOD)
@@ -70,6 +71,12 @@ public class VersionManager {
 				}
 			}
 		});
+	}
+
+	@SubscribeEvent
+	public static void onPreInit(final FMLConstructModEvent event) {
+		MOD_VERSIONS.put(MatyLib.MOD_ID,
+				processVersion("https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.16.5/versions.json"));
 	}
 
 	private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation()

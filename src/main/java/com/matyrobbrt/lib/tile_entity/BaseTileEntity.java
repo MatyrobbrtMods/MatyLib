@@ -34,8 +34,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import com.google.common.collect.Lists;
 import com.matyrobbrt.lib.annotation.SyncValue;
-import com.matyrobbrt.lib.network.BaseNetwork;
-import com.matyrobbrt.lib.network.matylib.MatyLibNetwork;
 import com.matyrobbrt.lib.network.matylib.SyncValuesMessage;
 import com.matyrobbrt.lib.network.matylib.SyncValuesMessage.Direction;
 
@@ -76,8 +74,7 @@ public class BaseTileEntity extends TileEntity {
 	 * @param direction
 	 */
 	public void sync(Direction direction) {
-		BaseNetwork.sendToAllTracking(MatyLibNetwork.CHANNEL, new SyncValuesMessage(worldPosition, this, direction),
-				this);
+		SyncValuesMessage.sendToAllTracking(this, direction);
 	}
 
 	private List<Field> fields = null;

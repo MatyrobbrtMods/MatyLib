@@ -32,9 +32,14 @@ import org.apache.logging.log4j.Logger;
 
 import com.matyrobbrt.lib.compat.curios.CuriosCompat;
 import com.matyrobbrt.lib.compat.top.TheOneProbeCompat;
+import com.matyrobbrt.lib.dev_tests.MatyLibDevTests;
 import com.matyrobbrt.lib.network.matylib.MatyLibNetwork;
+import com.matyrobbrt.lib.registry.annotation.AnnotationProcessor;
 import com.matyrobbrt.lib.util.ModIDs;
-import com.matyrobbrt.lib.version.VersionManager;
+import com.matyrobbrt.lib.wrench.DefaultWrenchBehaviours;
+import com.matyrobbrt.lib.wrench.WrenchIMC;
+
+import net.minecraft.block.Blocks;
 
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -55,12 +60,24 @@ public class MatyLib extends ModSetup {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MOD_ID = "matylib";
 
+	public static final AnnotationProcessor ANN_PROCESSOR = new AnnotationProcessor(MOD_ID);
+
 	public MatyLib() {
 		super(MOD_ID);
 		if (!registered) {
 			registered = true;
 			INSTANCE = this;
 		}
+		ANN_PROCESSOR.afterInit(() -> {
+			if (isProduction()) {
+				MatyLibDevTests.unregisterTests();
+			}
+		});
+	}
+
+	@Override
+	public AnnotationProcessor annotationProcessor() {
+		return ANN_PROCESSOR;
 	}
 
 	@Override
@@ -82,8 +99,8 @@ public class MatyLib extends ModSetup {
 			CuriosCompat.INSTANCE = new CuriosCompat.DefaultCurioHandler();
 		}
 
-		InterModComms.sendTo(MOD_ID, VersionManager.VERSIONS_METHOD,
-				() -> "https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.16.5/versions.json");
+		InterModComms.sendTo(MOD_ID, WrenchIMC.REGISTER_WRENCH_BEHAVIOUR_METHOD,
+				() -> DefaultWrenchBehaviours.normalDismantle(Blocks.IRON_BLOCK));
 	}
 
 }

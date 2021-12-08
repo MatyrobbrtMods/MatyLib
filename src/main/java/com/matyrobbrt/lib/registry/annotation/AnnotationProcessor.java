@@ -58,6 +58,7 @@ import com.matyrobbrt.lib.registry.annotation.recipe.RegisterRecipeSerializer;
 import com.matyrobbrt.lib.registry.annotation.recipe.RegisterRecipeType;
 import com.matyrobbrt.lib.util.ReflectionHelper;
 import com.matyrobbrt.lib.util.TriFunction;
+import com.matyrobbrt.lib.util.helper.TernaryHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -185,7 +186,8 @@ public class AnnotationProcessor {
 					try {
 						Class<?> clazz = Class.forName(data.getClassType().getClassName(), false,
 								getClass().getClassLoader());
-						if (clazz.getAnnotation(RegistryHolder.class).modid().equals(ownerModID)) {
+						if (clazz.getAnnotation(RegistryHolder.class).modid().equals(ownerModID)
+								&& clazz.getAnnotation(RegistryHolder.class).enabled()) {
 							if (!registryClasses.containsKey(clazz)) {
 								registryClasses.put(clazz, clazz.getAnnotation(RegistryHolder.class).modid());
 							}
@@ -233,6 +235,23 @@ public class AnnotationProcessor {
 					}
 				});
 
+	}
+
+	public void unregisterRegistryClass(Class<?> clazz) {
+		if (registryClasses.containsKey(clazz)) {
+			registryClasses.remove(clazz);
+		}
+	}
+
+	public void unregisterModule(Class<?> clazz) {
+		ResourceLocation name = clazz.isAnnotationPresent(Module.class) ? TernaryHelper.supplier(() -> {
+			RL rl = clazz.getAnnotation(Module.class).id();
+			return new ResourceLocation(rl.modid(), rl.path());
+		}) : null;
+		if (name != null) {
+			moduleClasses.remove(clazz);
+			modules.remove(name);
+		}
 	}
 
 	// Registry Annotations

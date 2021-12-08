@@ -28,6 +28,7 @@
 package com.matyrobbrt.lib.network.matylib;
 
 import com.matyrobbrt.lib.annotation.SyncValue;
+import com.matyrobbrt.lib.network.BaseNetwork;
 import com.matyrobbrt.lib.network.INetworkMessage;
 import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
 
@@ -35,6 +36,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 
@@ -78,30 +80,38 @@ public class SyncValuesMessage implements INetworkMessage {
 			context.enqueueWork(
 					() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> handleClient(this, context)));
 		} else if (direction == Direction.CLIENT_TO_SERVER) {
-			context.enqueueWork(
-					() -> DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> handleServer(this, context)));
+			/* TODO make this work */
+			// context.enqueueWork(
+			// () -> DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () ->
+			// handleServer(this, context)));
 		}
 	}
 
 	@SuppressWarnings("resource")
 	private static void handleClient(SyncValuesMessage syncValuesMessage, Context context) {
 		ClientWorld client = Minecraft.getInstance().level;
-		if (client.getBlockEntity(syncValuesMessage.pos) != null) {
-			client.getBlockEntity(syncValuesMessage.pos).load(client.getBlockState(syncValuesMessage.pos),
-					syncValuesMessage.nbt);
+		TileEntity tile = client.getBlockEntity(syncValuesMessage.pos);
+		if (tile != null && client.isClientSide()) {
+			tile.load(client.getBlockState(syncValuesMessage.pos), syncValuesMessage.nbt);
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void handleServer(SyncValuesMessage syncValuesMessage, Context context) {
 		ServerWorld server = context.getSender().getLevel();
-		if (server.getBlockEntity(syncValuesMessage.pos) != null) {
-			server.getBlockEntity(syncValuesMessage.pos).load(server.getBlockState(syncValuesMessage.pos),
-					syncValuesMessage.nbt);
+		TileEntity tile = server.getBlockEntity(syncValuesMessage.pos);
+		if (tile != null && !server.isClientSide()) {
+			tile.load(server.getBlockState(syncValuesMessage.pos), syncValuesMessage.nbt);
 		}
 	}
 
 	public static SyncValuesMessage decode(PacketBuffer buffer) {
 		return new SyncValuesMessage(buffer.readBlockPos(), buffer.readNbt(), buffer.readEnum(Direction.class));
+	}
+
+	public static void sendToAllTracking(BaseTileEntity tile, Direction direction) {
+		BaseNetwork.sendToAllTracking(MatyLibNetwork.CHANNEL,
+				new SyncValuesMessage(tile.getBlockPos(), tile, direction), tile);
 	}
 
 }
