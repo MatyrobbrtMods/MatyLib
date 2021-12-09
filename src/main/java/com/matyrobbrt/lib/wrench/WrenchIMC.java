@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.matyrobbrt.lib.MatyLib;
 
-import net.minecraft.block.Blocks;
-
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -23,7 +21,10 @@ public class WrenchIMC {
 	public static List<IWrenchBehaviour> getBehaviours() { return new ArrayList<>(BEHAVIOURS); }
 
 	static {
-		BEHAVIOURS.add(DefaultWrenchBehaviours.normalDismantle(Blocks.IRON_BLOCK));
+		BEHAVIOURS.add((wrench, mode, player, state, pos, level) -> state.getBlock() instanceof IWrenchUsable
+				? ((IWrenchUsable) state.getBlock()).getBehaviour().executeAction(wrench, mode, player, state, pos,
+						level)
+				: WrenchResult.FAIL);
 	}
 
 	@SubscribeEvent

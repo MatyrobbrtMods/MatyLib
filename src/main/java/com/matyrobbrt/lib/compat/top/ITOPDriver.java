@@ -44,6 +44,7 @@ import mcjty.theoneprobe.api.ProbeMode;
  * @author matyrobbrt
  *
  */
+@FunctionalInterface
 public interface ITOPDriver {
 
 	/**

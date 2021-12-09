@@ -38,8 +38,11 @@ import com.matyrobbrt.lib.registry.annotation.AnnotationProcessor;
 import com.matyrobbrt.lib.util.ModIDs;
 import com.matyrobbrt.lib.wrench.DefaultWrenchBehaviours;
 import com.matyrobbrt.lib.wrench.WrenchIMC;
+import com.matyrobbrt.lib.wrench.WrenchItem;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -102,5 +105,13 @@ public class MatyLib extends ModSetup {
 		InterModComms.sendTo(MOD_ID, WrenchIMC.REGISTER_WRENCH_BEHAVIOUR_METHOD,
 				() -> DefaultWrenchBehaviours.normalDismantle(Blocks.IRON_BLOCK));
 	}
+
+	public static final ItemGroup MATYLIB_TAB = new ItemGroup(ItemGroup.TABS.length, "matylib") {
+
+		@Override
+		public ItemStack makeIcon() {
+			return WrenchItem.MATYLIB_WRENCH_ITEM.getDefaultInstance();
+		}
+	};
 
 }

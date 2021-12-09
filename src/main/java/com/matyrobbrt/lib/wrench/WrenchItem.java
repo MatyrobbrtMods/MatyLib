@@ -7,7 +7,6 @@ import com.matyrobbrt.lib.registry.builder.ItemBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 
@@ -15,7 +14,7 @@ import net.minecraft.util.ActionResultType;
 public class WrenchItem extends Item {
 
 	@RegisterItem("wrench")
-	public static final WrenchItem TEST_WRENCH_ITEM = new ItemBuilder<>(WrenchItem::new).tab(ItemGroup.TAB_MISC)
+	public static final WrenchItem MATYLIB_WRENCH_ITEM = new ItemBuilder<>(WrenchItem::new).tab(MatyLib.MATYLIB_TAB)
 			.build();
 
 	public WrenchItem(Properties pProperties) {
@@ -25,17 +24,12 @@ public class WrenchItem extends Item {
 	@Override
 	public ActionResultType useOn(ItemUseContext pContext) {
 		if (pContext.getLevel().isClientSide()) { return super.useOn(pContext); }
-		System.out.println(WrenchIMC.getBehaviours());
 		BlockState clickedState = pContext.getLevel().getBlockState(pContext.getClickedPos());
 		for (IWrenchBehaviour behaviour : WrenchIMC.getBehaviours()) {
-			ActionResultType action = behaviour.executeAction(pContext.getItemInHand(), WrenchMode.DISMANTALE,
+			WrenchResult result = behaviour.executeAction(pContext.getItemInHand(), WrenchMode.DISMANTALE,
 					pContext.getPlayer(), clickedState, pContext.getClickedPos(), pContext.getLevel());
-			if (action == ActionResultType.CONSUME) {
+			if (result == WrenchResult.CONSUME) {
 				return ActionResultType.CONSUME;
-			} else if (action == ActionResultType.PASS) {
-				continue;
-			} else if ((action == ActionResultType.SUCCESS) || (action == ActionResultType.FAIL)) {
-				break;
 			}
 		}
 		return super.useOn(pContext);

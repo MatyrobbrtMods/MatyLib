@@ -9,7 +9,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 
@@ -19,7 +18,7 @@ public class DefaultWrenchBehaviours {
 		return (wrench, mode, player, state, pos, level) -> {
 			if ((mode != WrenchMode.DISMANTALE) || !Arrays.asList(blocks).contains(state.getBlock())
 					|| level.isClientSide()) {
-				return ActionResultType.PASS;
+				return WrenchResult.FAIL;
 			}
 			List<ItemStack> drops = state.getDrops(
 					new LootContext.Builder((ServerWorld) level).withParameter(LootParameters.TOOL, ItemStack.EMPTY)
@@ -29,7 +28,7 @@ public class DefaultWrenchBehaviours {
 				level.addFreshEntity(item);
 			});
 			level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-			return ActionResultType.CONSUME;
+			return WrenchResult.CONSUME;
 		};
 	}
 
