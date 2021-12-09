@@ -191,7 +191,7 @@ task makeChangelog(type: GitChangelogTask) {
 	fromRepo = file("$projectDir")
 	file = file('changelog.html')
 	untaggedName = "Current release ${version}"
-	fromCommit = 'a8aa88aea4491b7080d9bb2bfc4c254a95d95050'
+	fromCommit = '503bf04ee75f5995929b9c8e847921b64e95a07c'
 	toRef = '1.16.5'
 	templateContent = file('changelog.mustache').getText('UTF-8')
 }
