@@ -65,6 +65,10 @@ public class MatyLib extends ModSetup {
 
 	public static final AnnotationProcessor ANN_PROCESSOR = new AnnotationProcessor(MOD_ID);
 
+	static {
+		// ANN_PROCESSOR.ignoreRegistryType(Item.class);
+	}
+
 	public MatyLib() {
 		super(MOD_ID);
 		if (!registered) {

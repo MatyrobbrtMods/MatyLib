@@ -25,14 +25,54 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.util.helper;
+package com.matyrobbrt.lib.util;
 
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Predicate;
 
-public final class TernaryHelper {
+public class LockableList<E> extends ArrayList<E> {
 
-	public static <T> T supplier(Supplier<T> sup) {
-		return sup.get();
+	private static final long serialVersionUID = 5411121906393882708L;
+
+	private Predicate<E> locked;
+
+	@Override
+	public boolean add(E e) {
+		if (isLocked(e)) { return false; }
+		return super.add(e);
+	}
+
+	@Override
+	public void add(int index, E element) {
+		if (isLocked(element)) { return; }
+		super.add(index, element);
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends E> c) {
+		for (E e : c) {
+			if (isLocked(e)) { return false; }
+		}
+		return super.addAll(c);
+	}
+
+	@Override
+	public boolean addAll(int index, Collection<? extends E> c) {
+		for (E e : c) {
+			if (isLocked(e)) { return false; }
+		}
+		return super.addAll(index, c);
+	}
+	
+	public void setLocked(Predicate<E> locked) { this.locked = locked; }
+	
+	public boolean isLocked(E e) {
+		if (locked == null) {
+			return false;
+		} else {
+			return locked.test(e);
+		}
 	}
 
 }

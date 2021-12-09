@@ -74,7 +74,7 @@ public class BaseTileEntity extends TileEntity {
 	 * @param direction
 	 */
 	public void sync(Direction direction) {
-		SyncValuesMessage.sendToAllTracking(this, direction);
+		SyncValuesMessage.send(this, direction);
 	}
 
 	private List<Field> fields = null;

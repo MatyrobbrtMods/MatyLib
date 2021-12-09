@@ -45,7 +45,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 /**
  * Base class for mod main classes
- * 
+ *
  * @author matyrobbrt
  *
  */
@@ -61,7 +61,7 @@ public abstract class ModSetup {
 	 *              super
 	 */
 	protected ModSetup(String modid) {
-		this.modId = modid;
+		modId = modid;
 		modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(this::onCommonSetup);
 		modBus.addListener(this::onInterModEnqueue);

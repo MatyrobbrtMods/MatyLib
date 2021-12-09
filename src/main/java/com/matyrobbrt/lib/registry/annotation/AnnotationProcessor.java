@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -56,6 +57,7 @@ import com.matyrobbrt.lib.registry.BetterRegistryObject;
 import com.matyrobbrt.lib.registry.MatyLibRegistries;
 import com.matyrobbrt.lib.registry.annotation.recipe.RegisterRecipeSerializer;
 import com.matyrobbrt.lib.registry.annotation.recipe.RegisterRecipeType;
+import com.matyrobbrt.lib.util.LockableList;
 import com.matyrobbrt.lib.util.ReflectionHelper;
 import com.matyrobbrt.lib.util.TriFunction;
 import com.matyrobbrt.lib.util.helper.TernaryHelper;
@@ -80,6 +82,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.GenericEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -101,6 +104,8 @@ public class AnnotationProcessor {
 	protected final String ownerModID;
 	protected IEventBus modBus;
 	protected IEventBus forgeBus;
+
+	protected final LockableList<Class<?>> ignoredRegistryTypes = new LockableList<>();
 
 	protected Function<Block, ItemGroup> autoBlockItemTab = block -> ItemGroup.TAB_MISC;
 
@@ -140,6 +145,16 @@ public class AnnotationProcessor {
 	public HashMap<ResourceLocation, IModule> getModules() { return modules; }
 
 	/**
+	 * Ignores a registry type from being processed
+	 * 
+	 * @param registryType
+	 * @since 1.0.4
+	 */
+	public void ignoreRegistryType(Class<?> registryType) {
+		ignoredRegistryTypes.add(registryType);
+	}
+
+	/**
 	 * Adds listeners for all the methods that process annotations. Basically starts
 	 * the actual registering. <br>
 	 * Call it in your mods' constructor
@@ -151,21 +166,30 @@ public class AnnotationProcessor {
 		this.modBus = modBus;
 
 		modBus.addListener(this::constructMod);
+		ignoredRegistryTypes.setLocked(cls -> true);
 
 		// Registry Annotations
-		modBus.addGenericListener(Block.class, this::registerBlocks);
-		modBus.addGenericListener(ContainerType.class, this::registerContainerTypes);
-		modBus.addGenericListener(Effect.class, this::registerEffects);
-		modBus.addGenericListener(Potion.class, this::registerPotionTypes);
-		modBus.addGenericListener(Fluid.class, this::registerFluids);
-		modBus.addGenericListener(Item.class, this::registerItems);
-		modBus.addGenericListener(ParticleType.class, this::registerParticleTypes);
-		modBus.addGenericListener(SoundEvent.class, this::registerSoundEvents);
-		modBus.addGenericListener(Attribute.class, this::registerAttributes);
-		modBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeTypes);
-		modBus.addGenericListener(TileEntityType.class, this::registerTileEntityTypes);
-		modBus.addGenericListener(EntityType.class, this::registerEntityTypes);
+		addListenerIfNotIgnored(Block.class, this::registerBlocks);
+		addListenerIfNotIgnored(ContainerType.class, this::registerContainerTypes);
+		addListenerIfNotIgnored(Effect.class, this::registerEffects);
+		addListenerIfNotIgnored(Potion.class, this::registerPotionTypes);
+		addListenerIfNotIgnored(Fluid.class, this::registerFluids);
+		addListenerIfNotIgnored(Item.class, this::registerItems);
+		addListenerIfNotIgnored(ParticleType.class, this::registerParticleTypes);
+		addListenerIfNotIgnored(SoundEvent.class, this::registerSoundEvents);
+		addListenerIfNotIgnored(Attribute.class, this::registerAttributes);
+		addListenerIfNotIgnored(IRecipeSerializer.class, this::registerRecipeTypes);
+		addListenerIfNotIgnored(TileEntityType.class, this::registerTileEntityTypes);
+		addListenerIfNotIgnored(EntityType.class, this::registerEntityTypes);
+
 		modBus.addListener(this::registerCustomRegistries);
+	}
+
+	protected final <T extends GenericEvent<? extends F>, F> void addListenerIfNotIgnored(Class<F> clazz,
+			Consumer<T> consumer) {
+		if (!ignoredRegistryTypes.contains(clazz)) {
+			modBus.addGenericListener(clazz, consumer);
+		}
 	}
 
 	private void constructMod(FMLConstructModEvent event) {

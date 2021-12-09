@@ -80,16 +80,14 @@ public class SyncValuesMessage implements INetworkMessage {
 			context.enqueueWork(
 					() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> handleClient(this, context)));
 		} else if (direction == Direction.CLIENT_TO_SERVER) {
-			/* TODO make this work */
-			// context.enqueueWork(
-			// () -> DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () ->
-			// handleServer(this, context)));
+			handleServer(this, context);
 		}
 	}
 
 	@SuppressWarnings("resource")
 	private static void handleClient(SyncValuesMessage syncValuesMessage, Context context) {
 		ClientWorld client = Minecraft.getInstance().level;
+		if (client == null) { return; }
 		TileEntity tile = client.getBlockEntity(syncValuesMessage.pos);
 		if (tile != null && client.isClientSide()) {
 			tile.load(client.getBlockState(syncValuesMessage.pos), syncValuesMessage.nbt);
@@ -99,6 +97,7 @@ public class SyncValuesMessage implements INetworkMessage {
 	@SuppressWarnings("unused")
 	private static void handleServer(SyncValuesMessage syncValuesMessage, Context context) {
 		ServerWorld server = context.getSender().getLevel();
+		if (server == null) { return; }
 		TileEntity tile = server.getBlockEntity(syncValuesMessage.pos);
 		if (tile != null && !server.isClientSide()) {
 			tile.load(server.getBlockState(syncValuesMessage.pos), syncValuesMessage.nbt);
@@ -109,9 +108,13 @@ public class SyncValuesMessage implements INetworkMessage {
 		return new SyncValuesMessage(buffer.readBlockPos(), buffer.readNbt(), buffer.readEnum(Direction.class));
 	}
 
-	public static void sendToAllTracking(BaseTileEntity tile, Direction direction) {
-		BaseNetwork.sendToAllTracking(MatyLibNetwork.CHANNEL,
-				new SyncValuesMessage(tile.getBlockPos(), tile, direction), tile);
+	public static void send(BaseTileEntity tile, Direction direction) {
+		if (direction == Direction.SERVER_TO_CLIENT) {
+			BaseNetwork.sendToAllTracking(MatyLibNetwork.CHANNEL,
+					new SyncValuesMessage(tile.getBlockPos(), tile, direction), tile);
+		} else {
+			MatyLibNetwork.CHANNEL.sendToServer(new SyncValuesMessage(tile.getBlockPos(), tile, direction));
+		}
 	}
 
 }
