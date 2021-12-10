@@ -36,7 +36,7 @@ A library mod which will be used by most of my mods.
 
 [[dependencies.matylib]]
     modId="theoneprobe"
-    mandatory=true
+    mandatory=false
     versionRange="[1.16-3.1.4-22,)"
     ordering="NONE"
     side="BOTH"

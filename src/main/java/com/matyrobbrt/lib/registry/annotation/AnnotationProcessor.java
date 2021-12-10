@@ -192,6 +192,14 @@ public class AnnotationProcessor {
 		}
 	}
 
+	public void addRegistryClass(Class<?> clazz) {
+		registryClasses.put(clazz, ownerModID);
+	}
+
+	public void addModule(IModule module, ResourceLocation name) {
+		modules.put(name, module);
+	}
+
 	private void constructMod(FMLConstructModEvent event) {
 		initModules();
 		modules.forEach((id, module) -> module.register(modBus, forgeBus));
@@ -282,8 +290,8 @@ public class AnnotationProcessor {
 
 	private void registerItems(final RegistryEvent.Register<Item> event) {
 		registerFieldsWithAnnotation(event, RegisterItem.class, RegisterItem::value, of(ITEMS));
-		AnnotationProcessor.registerFieldsWithAnnotation(Lists.newArrayList(registryClasses.keySet()), event,
-				RegisterBlockItem.class, (classAn, fieldAn, obj) -> {
+		registerFieldsWithAnnotation(Lists.newArrayList(registryClasses.keySet()), event, RegisterBlockItem.class,
+				(classAn, fieldAn, obj) -> {
 					if (obj instanceof BlockItem) { return ((BlockItem) obj).getBlock().getRegistryName(); }
 					throw new ProcessingException("Invalid BlockItem");
 				}, Optional.empty());
@@ -363,11 +371,10 @@ public class AnnotationProcessor {
 						if (field.get(field.getDeclaringClass()) instanceof IRecipeType<?>) {
 							IRecipeType<?> type = (IRecipeType<?>) field.get(field.getDeclaringClass());
 							Registry.register(Registry.RECIPE_TYPE,
-									new ResourceLocation(
-											field.getDeclaringClass().getAnnotation(RegistryHolder.class).modid(),
+									new ResourceLocation(getModID(field.getDeclaringClass()),
 											field.getAnnotation(RegisterRecipeType.class).value()),
 									type);
-							String modid = field.getDeclaringClass().getAnnotation(RegistryHolder.class).modid();
+							String modid = getModID(field.getDeclaringClass());
 							if (RECIPE_TYPES.containsKey(modid)) {
 								List<IRecipeType<?>> oldList = RECIPE_TYPES.get(modid);
 								oldList.add(type);
@@ -392,8 +399,9 @@ public class AnnotationProcessor {
 	protected <T extends IForgeRegistryEntry<T>, A extends Annotation> void registerFieldsWithAnnotation(
 			final RegistryEvent.Register<T> event, Class<A> annotation, Function<A, String> registryName,
 			Optional<Map<String, List<T>>> outputMap) {
-		AnnotationProcessor.registerFieldsWithAnnotation(Lists.newArrayList(registryClasses.keySet()), event,
-				annotation, (clazz, fieldAn, obj) -> new ResourceLocation(getModID(clazz), registryName.apply(fieldAn)),
+		registerFieldsWithAnnotation(
+				Lists.newArrayList(registryClasses.keySet()), event, annotation, (clazz, fieldAn,
+						obj) -> new ResourceLocation(getModIDBasedOnAnnotations(clazz), registryName.apply(fieldAn)),
 				outputMap);
 	}
 
@@ -413,6 +421,12 @@ public class AnnotationProcessor {
 				});
 	}
 
+	public <T extends IForgeRegistryEntry<T>, A extends Annotation> void registerFieldsWithAnnotation(
+			ArrayList<Class<?>> registryClasses, final RegistryEvent.Register<T> event, Class<A> annotation,
+			TriFunction<Class<?>, A, T, ResourceLocation> registryName, Optional<Map<String, List<T>>> outputMap) {
+		registerFieldsWithAnnotation(registryClasses, event, annotation, registryName, this::getModID, outputMap);
+	}
+
 	/**
 	 * Handles registry annotations
 	 *
@@ -426,6 +440,8 @@ public class AnnotationProcessor {
 	 *                     field and the object (of type <strong>T</strong>) the
 	 *                     field contains. This function will return the registry
 	 *                     name of the object, based off the inputed data
+	 * @param modid        a function that figures out the mod id, based on the
+	 *                     given class
 	 * @param outputMap    optionally, a map in which the processed objects will be
 	 *                     put, as following: <br>
 	 *                     A {@link List} with the generic type {@code <T>} will be
@@ -435,7 +451,8 @@ public class AnnotationProcessor {
 	@SuppressWarnings("unchecked")
 	public static <T extends IForgeRegistryEntry<T>, A extends Annotation> void registerFieldsWithAnnotation(
 			ArrayList<Class<?>> registryClasses, final RegistryEvent.Register<T> event, Class<A> annotation,
-			TriFunction<Class<?>, A, T, ResourceLocation> registryName, Optional<Map<String, List<T>>> outputMap) {
+			TriFunction<Class<?>, A, T, ResourceLocation> registryName, Function<Class<?>, String> modid,
+			Optional<Map<String, List<T>>> outputMap) {
 		Class<T> objectClass = event.getRegistry().getRegistrySuperType();
 		ReflectionHelper.getFieldsAnnotatedWith(registryClasses, annotation).forEach(field -> {
 			field.setAccessible(true);
@@ -464,8 +481,8 @@ public class AnnotationProcessor {
 					registry.get().setRegistryName(name);
 					event.getRegistry().register(registry.get());
 					outputMap.ifPresent(output -> {
-						String modid = getModID(field.getDeclaringClass());
-						output.computeIfAbsent(modid, key -> Lists.newArrayList()).add(registry.get());
+						output.computeIfAbsent(modid.apply(field.getDeclaringClass()), key -> Lists.newArrayList())
+								.add(registry.get());
 					});
 					if (isSupplier) {
 						BetterRegistryObject<?> regObj = (BetterRegistryObject<?>) fieldObject;
@@ -485,8 +502,19 @@ public class AnnotationProcessor {
 		});
 	}
 
-	public static String getModID(Class<?> clazz) {
+	public static String getModIDBasedOnAnnotations(Class<?> clazz) {
 		if (clazz.isAnnotationPresent(RegistryHolder.class)) {
+			return clazz.getAnnotation(RegistryHolder.class).modid();
+		} else if (clazz.isAnnotationPresent(Module.class)) { return clazz.getAnnotation(Module.class).id().modid(); }
+		return null;
+	}
+
+	protected String getModID(Class<?> clazz) {
+		if (registryClasses.containsKey(clazz)) {
+			return registryClasses.get(clazz);
+		} else if (moduleClasses.containsKey(clazz)) {
+			return moduleClasses.get(clazz);
+		} else if (clazz.isAnnotationPresent(RegistryHolder.class)) {
 			return clazz.getAnnotation(RegistryHolder.class).modid();
 		} else if (clazz.isAnnotationPresent(Module.class)) { return clazz.getAnnotation(Module.class).id().modid(); }
 		return null;
