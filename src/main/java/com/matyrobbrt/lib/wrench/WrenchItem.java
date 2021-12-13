@@ -34,6 +34,7 @@ import com.matyrobbrt.lib.registry.builder.ItemBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 
@@ -41,7 +42,7 @@ import net.minecraft.util.ActionResultType;
 public class WrenchItem extends Item {
 
 	@RegisterItem("wrench")
-	public static final WrenchItem MATYLIB_WRENCH_ITEM = new ItemBuilder<>(WrenchItem::new).tab(MatyLib.MATYLIB_TAB)
+	public static final WrenchItem MATYLIB_WRENCH_ITEM = new ItemBuilder<>(WrenchItem::new).tab(ItemGroup.TAB_MISC)
 			.build();
 
 	public WrenchItem(Properties pProperties) {

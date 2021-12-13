@@ -4,7 +4,11 @@
 	"compatibilityLevel": "JAVA_8",
 	"refmap": "matylib.refmap.json",
 	"mixins": [
-		"ResourcePackTypeExtender"
+		"ResourcePackTypeExtender",
+		"ResourcePackListMixin"
+	],
+	"client": [
+		"client.ClientModLoaderMixin"
 	],
 	"minVersion": "0.8"
 }

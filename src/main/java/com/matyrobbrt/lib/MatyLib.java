@@ -36,15 +36,7 @@ import com.matyrobbrt.lib.dev_tests.MatyLibDevTests;
 import com.matyrobbrt.lib.network.matylib.MatyLibNetwork;
 import com.matyrobbrt.lib.registry.annotation.AnnotationProcessor;
 import com.matyrobbrt.lib.util.ModIDs;
-import com.matyrobbrt.lib.wrench.DefaultWrenchBehaviours;
-import com.matyrobbrt.lib.wrench.WrenchIMC;
-import com.matyrobbrt.lib.wrench.WrenchItem;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -105,17 +97,6 @@ public class MatyLib extends ModSetup {
 		} else {
 			CuriosCompat.INSTANCE = new CuriosCompat.DefaultCurioHandler();
 		}
-
-		InterModComms.sendTo(MOD_ID, WrenchIMC.REGISTER_WRENCH_BEHAVIOUR_METHOD,
-				() -> DefaultWrenchBehaviours.normalDismantle(Blocks.IRON_BLOCK));
 	}
-
-	public static final ItemGroup MATYLIB_TAB = new ItemGroup(ItemGroup.TABS.length, "matylib") {
-
-		@Override
-		public ItemStack makeIcon() {
-			return WrenchItem.MATYLIB_WRENCH_ITEM.getDefaultInstance();
-		}
-	};
 
 }

@@ -27,12 +27,10 @@
 
 package com.matyrobbrt.lib.dev_tests;
 
-import com.matyrobbrt.lib.MatyLib;
 import com.matyrobbrt.lib.annotation.SyncValue;
 import com.matyrobbrt.lib.registry.annotation.AutoBlockItem;
 import com.matyrobbrt.lib.registry.annotation.RegisterBlock;
 import com.matyrobbrt.lib.registry.annotation.RegisterTileEntityType;
-import com.matyrobbrt.lib.registry.annotation.RegistryHolder;
 import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
 import com.matyrobbrt.lib.wrench.IWrenchBehaviour;
 import com.matyrobbrt.lib.wrench.IWrenchUsable;
@@ -45,7 +43,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
-@RegistryHolder(modid = MatyLib.MOD_ID)
+//@RegistryHolder(modid = MatyLib.MOD_ID)
 class TestTileEntity extends BaseTileEntity implements ITickableTileEntity {
 
 	@AutoBlockItem
