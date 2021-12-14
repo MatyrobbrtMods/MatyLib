@@ -25,23 +25,12 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.wrench;
+package com.matyrobbrt.lib.multiblock;
 
-import java.util.Arrays;
-
-import net.minecraft.block.Block;
-
-public class DefaultWrenchBehaviours {
-
-	public static final IWrenchBehaviour normalDismantle(Block... blocks) {
-		return (wrench, mode, player, state, pos, level) -> {
-			if ((mode != WrenchMode.DISMANTALE) || !Arrays.asList(blocks).contains(state.getBlock())
-					|| level.isClientSide()) {
-				return WrenchResult.FAIL;
-			}
-			Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, wrench);
-			return WrenchResult.CONSUME;
-		};
-	}
+/**
+ * Base interface for multiblocks. Classes that implemement this interface are
+ * the multiblocks, which are held in {@link MultiblockDriver}s
+ */
+public interface IMultiblock {
 
 }

@@ -25,23 +25,29 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.wrench;
+package com.matyrobbrt.lib.multiblock;
 
-import java.util.Arrays;
+import net.minecraft.util.ResourceLocation;
 
-import net.minecraft.block.Block;
+/**
+ * Classes implmenting this interface represent a part of a multiblock
+ */
+public interface IMultiblockComponent {
 
-public class DefaultWrenchBehaviours {
+	/**
+	 * Get an ID representing the type of this multiblock. At this moment, this does
+	 * nothing
+	 */
+	ResourceLocation getId();
 
-	public static final IWrenchBehaviour normalDismantle(Block... blocks) {
-		return (wrench, mode, player, state, pos, level) -> {
-			if ((mode != WrenchMode.DISMANTALE) || !Arrays.asList(blocks).contains(state.getBlock())
-					|| level.isClientSide()) {
-				return WrenchResult.FAIL;
-			}
-			Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, wrench);
-			return WrenchResult.CONSUME;
-		};
-	}
+	/**
+	 * @return the multiblock id in the {@link MultiblockDriver}
+	 */
+	int getMultiblockId();
+
+	/**
+	 * This method should do nothing if the id didn't change (test for that!)
+	 */
+	void setMultiblockId(int id);
 
 }

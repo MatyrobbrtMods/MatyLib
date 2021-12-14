@@ -52,8 +52,8 @@ public class MatyLib extends ModSetup {
 	public static boolean patchouliLoaded = false;
 	public static boolean curiosLoaded = false;
 
-	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MOD_ID = "matylib";
+	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 	public static final AnnotationProcessor ANN_PROCESSOR = new AnnotationProcessor(MOD_ID);
 

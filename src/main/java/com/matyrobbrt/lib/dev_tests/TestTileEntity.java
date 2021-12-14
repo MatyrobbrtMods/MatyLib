@@ -27,7 +27,17 @@
 
 package com.matyrobbrt.lib.dev_tests;
 
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.matyrobbrt.lib.annotation.SyncValue;
+import com.matyrobbrt.lib.multiblock.IMultiblock;
+import com.matyrobbrt.lib.multiblock.IMultiblockConnector;
+import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
+import com.matyrobbrt.lib.multiblock.MultiblockDriver;
+import com.matyrobbrt.lib.multiblock.wsd.MultiblockDriverWSD;
 import com.matyrobbrt.lib.registry.annotation.AutoBlockItem;
 import com.matyrobbrt.lib.registry.annotation.RegisterBlock;
 import com.matyrobbrt.lib.registry.annotation.RegisterTileEntityType;
@@ -42,9 +52,13 @@ import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 //@RegistryHolder(modid = MatyLib.MOD_ID)
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity {
+class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
 
 	@AutoBlockItem
 	@RegisterBlock("test")
@@ -93,8 +107,69 @@ class TestTileEntity extends BaseTileEntity implements ITickableTileEntity {
 			whatever = 13;
 			sync(com.matyrobbrt.lib.network.matylib.SyncValuesMessage.Direction.CLIENT_TO_SERVER);
 		} else {
-			System.out.println(whatever);
+			TestWSD.getInstance((ServerWorld) level).getDriver().getHolder(0).addBlockPos(worldPosition);
+			TestWSD.getInstance((ServerWorld) level).setDirty(true);
 		}
 	}
 
+	public static final class TestWSD extends MultiblockDriverWSD<TestMultiblock> {
+
+		public static final String ID = "test_multiblock";
+
+		private TestWSD() {
+			super(ID);
+		}
+
+		public static TestWSD getInstance(World level) {
+			return getInstance((ServerWorld) level);
+		}
+
+		public static TestWSD getInstance(ServerWorld level) {
+			return level.getDataStorage().computeIfAbsent(TestWSD::new, ID);
+		}
+
+		private final MultiblockDriver<TestMultiblock> driver = new MultiblockDriver.Builder<TestMultiblock>()
+				.deserializer((tag, multiblock) -> {})
+				.componentGetter((level, pos) -> level.getBlockEntity(pos) instanceof IMultiblockComponent
+						? (IMultiblockComponent) level.getBlockEntity(pos)
+						: null)
+				.connector(new Merger()).build();
+
+		@Override
+		public MultiblockDriver<TestMultiblock> getDriver() { return driver; }
+
+	}
+
+	static final class Merger implements IMultiblockConnector<TestMultiblock> {
+
+		@Override
+		public void initialize(MultiblockDriver<TestMultiblock> driver, World level, TestMultiblock newMultiblock,
+				int id) {
+			driver.createOrUpdate(id, newMultiblock);
+		}
+
+		@Override
+		public void merge(MultiblockDriver<TestMultiblock> driver, World level, TestMultiblock newMultiblock,
+				TestMultiblock otherMultiblock) {
+		}
+
+		@Override
+		public void distribute(MultiblockDriver<TestMultiblock> driver, World level, TestMultiblock original,
+				List<Pair<Integer, Set<BlockPos>>> todo) {
+		}
+
+	}
+
+	@Override
+	public ResourceLocation getId() { return new ResourceLocation("name"); }
+
+	@Override
+	public int getMultiblockId() { return TestWSD.getInstance(level).getDriver().getIDForPos(worldPosition); }
+
+	@Override
+	public void setMultiblockId(int id) {
+	}
+
+	static final class TestMultiblock implements IMultiblock {
+	}
 }

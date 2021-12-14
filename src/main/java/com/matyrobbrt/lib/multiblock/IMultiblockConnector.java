@@ -25,23 +25,38 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.wrench;
+package com.matyrobbrt.lib.multiblock;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
-import net.minecraft.block.Block;
+import org.apache.commons.lang3.tuple.Pair;
 
-public class DefaultWrenchBehaviours {
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-	public static final IWrenchBehaviour normalDismantle(Block... blocks) {
-		return (wrench, mode, player, state, pos, level) -> {
-			if ((mode != WrenchMode.DISMANTALE) || !Arrays.asList(blocks).contains(state.getBlock())
-					|| level.isClientSide()) {
-				return WrenchResult.FAIL;
-			}
-			Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, wrench);
-			return WrenchResult.CONSUME;
-		};
-	}
+/**
+ * Interface that connects multiple multiblocks together
+ *
+ * @param <M>
+ */
+public interface IMultiblockConnector<M extends IMultiblock> {
+
+	/**
+	 * Initialize a new multiblock with a single block
+	 */
+	void initialize(MultiblockDriver<M> driver, World level, M newMultiblock, int id);
+
+	/**
+	 * Merge the other multiblock into the main one. The given multiblocks are
+	 * guaranteed to be compatible
+	 */
+	void merge(MultiblockDriver<M> driver, World level, M newMultiblock, M otherMultiblock);
+
+	/**
+	 * Take an original multiblock and distribute it to the multiblocks in the todo
+	 * list
+	 */
+	void distribute(MultiblockDriver<M> driver, World level, M original, List<Pair<Integer, Set<BlockPos>>> todo);
 
 }

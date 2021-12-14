@@ -25,23 +25,31 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.wrench;
+package com.matyrobbrt.lib.multiblock.wsd;
 
-import java.util.Arrays;
+import com.matyrobbrt.lib.multiblock.IMultiblock;
+import com.matyrobbrt.lib.multiblock.MultiblockDriver;
 
-import net.minecraft.block.Block;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.storage.WorldSavedData;
 
-public class DefaultWrenchBehaviours {
+public abstract class MultiblockDriverWSD<T extends IMultiblock> extends WorldSavedData {
 
-	public static final IWrenchBehaviour normalDismantle(Block... blocks) {
-		return (wrench, mode, player, state, pos, level) -> {
-			if ((mode != WrenchMode.DISMANTALE) || !Arrays.asList(blocks).contains(state.getBlock())
-					|| level.isClientSide()) {
-				return WrenchResult.FAIL;
-			}
-			Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, wrench);
-			return WrenchResult.CONSUME;
-		};
+	protected MultiblockDriverWSD(String p_i2141_1_) {
+		super(p_i2141_1_);
+	}
+
+	public abstract MultiblockDriver<T> getDriver();
+
+	@Override
+	public void load(CompoundNBT nbt) {
+		getDriver().load(nbt.getCompound("driver"));
+	}
+
+	@Override
+	public CompoundNBT save(CompoundNBT tag) {
+		tag.put("driver", getDriver().save(new CompoundNBT()));
+		return tag;
 	}
 
 }

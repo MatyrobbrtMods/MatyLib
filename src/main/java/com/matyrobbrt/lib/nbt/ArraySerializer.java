@@ -25,23 +25,38 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.wrench;
+package com.matyrobbrt.lib.nbt;
 
-import java.util.Arrays;
+import java.util.function.Function;
 
-import net.minecraft.block.Block;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 
-public class DefaultWrenchBehaviours {
+public class ArraySerializer<T, TNBT extends INBT> {
 
-	public static final IWrenchBehaviour normalDismantle(Block... blocks) {
-		return (wrench, mode, player, state, pos, level) -> {
-			if ((mode != WrenchMode.DISMANTALE) || !Arrays.asList(blocks).contains(state.getBlock())
-					|| level.isClientSide()) {
-				return WrenchResult.FAIL;
-			}
-			Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, wrench);
-			return WrenchResult.CONSUME;
-		};
+	private final Function<T, TNBT> serializer;
+	private final Function<TNBT, T> deserializer;
+
+	public ArraySerializer(Function<T, TNBT> serializer, Function<TNBT, T> deserializer) {
+		this.serializer = serializer;
+		this.deserializer = deserializer;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void deserializeNBT(T[] outputArray, CompoundNBT nbt) {
+		int size = nbt.getInt("size");
+		for (int i = 0; i < size; i++) {
+			outputArray[i] = deserializer.apply((TNBT) nbt.get(String.valueOf(i)));
+		}
+	}
+
+	public CompoundNBT serializeNBT(T[] inputArray) {
+		CompoundNBT nbt = new CompoundNBT();
+		nbt.putInt("size", inputArray.length);
+		for (int i = 0; i < inputArray.length; i++) {
+			nbt.put(String.valueOf(i), serializer.apply(inputArray[i]));
+		}
+		return nbt;
 	}
 
 }

@@ -25,23 +25,46 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.wrench;
+package com.matyrobbrt.lib.multiblock;
 
-import java.util.Arrays;
+import com.matyrobbrt.lib.nbt.BaseNBTSet;
 
-import net.minecraft.block.Block;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.LongNBT;
+import net.minecraft.util.math.BlockPos;
 
-public class DefaultWrenchBehaviours {
+public class MultiblockHolder<M extends IMultiblock> {
 
-	public static final IWrenchBehaviour normalDismantle(Block... blocks) {
-		return (wrench, mode, player, state, pos, level) -> {
-			if ((mode != WrenchMode.DISMANTALE) || !Arrays.asList(blocks).contains(state.getBlock())
-					|| level.isClientSide()) {
-				return WrenchResult.FAIL;
-			}
-			Block.dropResources(state, level, pos, level.getBlockEntity(pos), player, wrench);
-			return WrenchResult.CONSUME;
-		};
+	private final M multiblock;
+	private final BaseNBTSet<BlockPos, LongNBT> positions = new BaseNBTSet<>(pos -> LongNBT.valueOf(pos.asLong()),
+			nbt -> BlockPos.of(nbt.getAsLong()));
+
+	public MultiblockHolder(final M multiblock) {
+		this.multiblock = multiblock;
+	}
+
+	public BaseNBTSet<BlockPos, LongNBT> getPositions() { return positions; }
+
+	public void removeBlockPos(final BlockPos toRemove) {
+		positions.remove(toRemove);
+	}
+
+	public void addBlockPos(final BlockPos pos) {
+		positions.add(pos);
+	}
+
+	public boolean containsBlockPos(final BlockPos pos) {
+		return positions.contains(pos);
+	}
+
+	public M getMultiblock() { return multiblock; }
+
+	public void save(CompoundNBT nbt) {
+		nbt.put("positions", positions.serializeNBT());
+	}
+
+	public void load(CompoundNBT nbt) {
+		positions.deserializeNBT(nbt.getCompound("positions"));
 	}
 
 }
