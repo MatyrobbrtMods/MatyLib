@@ -28,6 +28,7 @@
 package com.matyrobbrt.lib.nbt;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.nbt.CompoundNBT;
@@ -45,6 +46,12 @@ public class BaseNBTList<O, ONBT extends INBT> extends ArrayList<O> implements I
 
 	public BaseNBTList(Function<O, ONBT> serializer, Function<ONBT, O> deserializer) {
 		super();
+		this.serializer = serializer;
+		this.deserializer = deserializer;
+	}
+
+	public BaseNBTList(Function<O, ONBT> serializer, Function<ONBT, O> deserializer, List<O> other) {
+		super(other);
 		this.serializer = serializer;
 		this.deserializer = deserializer;
 	}

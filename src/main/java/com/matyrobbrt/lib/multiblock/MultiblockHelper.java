@@ -235,4 +235,14 @@ public class MultiblockHelper {
 		driver.getConnector().distribute(driver, level, thisData, todo);
 	}
 
+	public static <T extends IMultiblock> void onBlockRemoved(MultiblockDriver<T> driver, BlockPos pos) {
+		Integer id = driver.getIDForPos(pos);
+		if (id != null) {
+			MultiblockHolder<T> holder = driver.getHolder(id);
+			if (holder.getPositions().size() <= 1 && holder.getPositions().contains(pos)) {
+				driver.remove(id);
+			}
+		}
+	}
+
 }

@@ -36,6 +36,8 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.matyrobbrt.lib.multiblock.wsd.MultiblockDriverWSD;
 import com.matyrobbrt.lib.nbt.BaseNBTMap;
 
@@ -103,12 +105,26 @@ public class MultiblockDriver<T extends IMultiblock> {
 	 */
 	public MultiblockHolder<T> createOrUpdate(int id, T multiblock) {
 		multiblocks.put(id, new MultiblockHolder<>(multiblock));
+		dirtySetter.accept(this);
 		return getHolder(id);
 	}
 
 	public MultiblockHolder<T> getOrCreate(int id, T ifAbsent) {
-		multiblocks.computeIfAbsent(id, id2 -> new MultiblockHolder<>(ifAbsent));
+		multiblocks.computeIfAbsent(id, id2 -> {
+			dirtySetter.accept(MultiblockDriver.this);
+			return new MultiblockHolder<>(ifAbsent);
+		});
 		return getHolder(id);
+	}
+
+	public MultiblockHolder<T> remove(int id) {
+		if (multiblocks.containsKey(id)) {
+			MultiblockHolder<T> toReturn = multiblocks.remove(id);
+			lastId--;
+			dirtySetter.accept(this);
+			return toReturn;
+		}
+		return null;
 	}
 
 	@Nullable
@@ -116,7 +132,7 @@ public class MultiblockDriver<T extends IMultiblock> {
 		return multiblocks.get(id);
 	}
 
-	public int getIDForPos(BlockPos pos) {
+	public Integer getIDForPos(BlockPos pos) {
 		AtomicReference<Integer> id = new AtomicReference<>(null);
 		multiblocks.forEach((mbID, holder) -> {
 			if (holder.containsBlockPos(pos)) {
@@ -125,6 +141,16 @@ public class MultiblockDriver<T extends IMultiblock> {
 			}
 		});
 		return id.get();
+	}
+
+	public Pair<Integer, MultiblockHolder<T>> getHolderForMultiblock(T multiblock) {
+		AtomicReference<Pair<Integer, MultiblockHolder<T>>> ref = new AtomicReference<>(null);
+		multiblocks.forEach((mbID, holder) -> {
+			if (holder.getMultiblock() == multiblock) {
+				ref.set(Pair.of(mbID, holder));
+			}
+		});
+		return ref.get();
 	}
 
 	/**
@@ -161,7 +187,9 @@ public class MultiblockDriver<T extends IMultiblock> {
 	 */
 	public int createId() {
 		lastId++;
-		dirtySetter.accept(this);
+		if (dirtySetter != null) {
+			dirtySetter.accept(this);
+		}
 		return lastId;
 	}
 
@@ -195,8 +223,8 @@ public class MultiblockDriver<T extends IMultiblock> {
 			return this;
 		}
 
-		public Builder<T> deserializer(BiConsumer<CompoundNBT, T> deserializer) {
-			this.serializer = deserializer;
+		public Builder<T> serializer(BiConsumer<CompoundNBT, T> serializer) {
+			this.serializer = serializer;
 			return this;
 		}
 
