@@ -34,8 +34,8 @@ import java.util.function.Supplier;
 import com.google.common.collect.Maps;
 import com.matyrobbrt.lib.MatyLib;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.AxeItem;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.level.block.Block;
 
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -62,8 +62,8 @@ public class StrippingMap {
 	private static void registerStrippables() {
 		if (!registered) {
 			ENQUEUED_ADDING.forEach((input, output) -> {
-				AxeItem.STRIPABLES = Maps.newHashMap(AxeItem.STRIPABLES);
-				AxeItem.STRIPABLES.put(input.get(), output.get());
+				AxeItem.STRIPPABLES = Maps.newHashMap(AxeItem.STRIPPABLES);
+				AxeItem.STRIPPABLES.put(input.get(), output.get());
 			});
 			registered = true;
 		}

@@ -32,8 +32,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 /**
  * Interface that connects multiple multiblocks together
@@ -45,18 +45,18 @@ public interface IMultiblockConnector<M extends IMultiblock> {
 	/**
 	 * Initialize a new multiblock with a single block
 	 */
-	void initialize(MultiblockDriver<M> driver, World level, M newMultiblock, int id);
+	void initialize(MultiblockDriver<M> driver, Level level, M newMultiblock, int id);
 
 	/**
 	 * Merge the other multiblock into the main one. The given multiblocks are
 	 * guaranteed to be compatible
 	 */
-	void merge(MultiblockDriver<M> driver, World level, M newMultiblock, M otherMultiblock);
+	void merge(MultiblockDriver<M> driver, Level level, M newMultiblock, M otherMultiblock);
 
 	/**
 	 * Take an original multiblock and distribute it to the multiblocks in the todo
 	 * list
 	 */
-	void distribute(MultiblockDriver<M> driver, World level, M original, List<Pair<Integer, Set<BlockPos>>> todo);
+	void distribute(MultiblockDriver<M> driver, Level level, M original, List<Pair<Integer, Set<BlockPos>>> todo);
 
 }

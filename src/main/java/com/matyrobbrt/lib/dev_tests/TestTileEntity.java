@@ -32,19 +32,19 @@ import com.matyrobbrt.lib.annotation.SyncValue;
 import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
 import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
+class TestTileEntity extends BaseTileEntity implements IMultiblockComponent {
 
-	public TestTileEntity() {
-		super(TestModule.TE_TYPE);
+	public TestTileEntity(BlockPos pos, BlockState state) {
+		super(TestModule.TE_TYPE, pos, state);
 	}
 
 	@SyncValue(name = "whateverSync", onPacket = true)
 	private int whatever;
 
-	@Override
 	public void tick() {
 		if (level.isClientSide()) {
 			whatever = 13;

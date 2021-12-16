@@ -7,21 +7,21 @@ import com.matyrobbrt.lib.module.Module;
 import com.matyrobbrt.lib.module.ModuleHelper;
 import com.matyrobbrt.lib.registry.annotation.AutoBlockItem;
 import com.matyrobbrt.lib.registry.annotation.RegisterBlock;
-import com.matyrobbrt.lib.registry.annotation.RegisterTileEntityType;
+import com.matyrobbrt.lib.registry.annotation.RegisterBlockEntityType;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Blocks;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 @Module(id = @RL(modid = MatyLib.MOD_ID, path = "test"))
 public class TestModule extends ModuleHelper implements IModule {
 
 	@AutoBlockItem
 	@RegisterBlock("test")
-	public static final TestBlock TEST_BLOCK = new TestBlock(AbstractBlock.Properties.copy(Blocks.IRON_BARS));
+	public static final TestBlock TEST_BLOCK = new TestBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BARS));
 
-	@RegisterTileEntityType("test")
-	public static final TileEntityType<TestTileEntity> TE_TYPE = TileEntityType.Builder
+	@RegisterBlockEntityType("test")
+	public static final BlockEntityType<TestTileEntity> TE_TYPE = BlockEntityType.Builder
 			.of(TestTileEntity::new, TEST_BLOCK).build(null);
 
 }

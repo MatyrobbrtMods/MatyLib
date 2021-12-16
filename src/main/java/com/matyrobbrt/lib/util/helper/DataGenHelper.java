@@ -35,35 +35,35 @@ import com.matyrobbrt.lib.datagen.recipe.Output;
 import com.matyrobbrt.lib.datagen.recipe.vanilla.KeyIngredient;
 import com.matyrobbrt.lib.datagen.recipe.vanilla.Pattern;
 
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.MinMaxBounds;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 public class DataGenHelper {
 
 	public static class Criterion {
 
-		public static InventoryChangeTrigger.Instance hasAir() {
+		public static TriggerInstance hasAir() {
 			return inventoryTrigger(ItemPredicate.Builder.item().of(Items.AIR).build());
 		}
 
-		public static InventoryChangeTrigger.Instance has(IItemProvider item) {
+		public static TriggerInstance has(ItemLike item) {
 			return inventoryTrigger(ItemPredicate.Builder.item().of(item).build());
 		}
 		
-		public static InventoryChangeTrigger.Instance has(Ingredient ingredient) {
+		public static TriggerInstance has(Ingredient ingredient) {
 			return inventoryTrigger(ItemPredicate.Builder.item().of(ingredient.getItems()[0].getItem()).build());
 		}
 
-		protected static InventoryChangeTrigger.Instance inventoryTrigger(ItemPredicate... p_200405_0_) {
-			return new InventoryChangeTrigger.Instance(EntityPredicate.AndPredicate.ANY, MinMaxBounds.IntBound.ANY,
-					MinMaxBounds.IntBound.ANY, MinMaxBounds.IntBound.ANY, p_200405_0_);
+		protected static TriggerInstance inventoryTrigger(ItemPredicate... p_200405_0_) {
+			return new TriggerInstance(EntityPredicate.Composite.ANY, MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY,
+					MinMaxBounds.Ints.ANY, p_200405_0_);
 		}
 	}
 

@@ -30,5 +30,5 @@
  *
  * @author matyrobbrt
  */
-@mcp.MethodsReturnNonnullByDefault
+@net.minecraft.MethodsReturnNonnullByDefault
 package com.matyrobbrt.lib.registry.annotation;

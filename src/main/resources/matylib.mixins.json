@@ -1,14 +1,10 @@
 {
 	"required": true,
 	"package": "com.matyrobbrt.lib.mixin",
-	"compatibilityLevel": "JAVA_8",
+	"compatibilityLevel": "JAVA_17",
 	"refmap": "matylib.refmap.json",
 	"mixins": [
-		"ResourcePackTypeExtender",
-		"ResourcePackListMixin"
-	],
-	"client": [
-		"client.ClientModLoaderMixin"
+		"ResourcePackTypeExtender"
 	],
 	"minVersion": "0.8"
 }

@@ -45,7 +45,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.objectweb.asm.Type;
 
@@ -62,23 +61,23 @@ import com.matyrobbrt.lib.util.ReflectionHelper;
 import com.matyrobbrt.lib.util.TriFunction;
 import com.matyrobbrt.lib.util.helper.TernaryHelper;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Potion;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluid;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -107,7 +106,7 @@ public class AnnotationProcessor {
 
 	protected final LockableList<Class<?>> ignoredRegistryTypes = new LockableList<>();
 
-	protected Function<Block, ItemGroup> autoBlockItemTab = block -> ItemGroup.TAB_MISC;
+	protected Function<Block, CreativeModeTab> autoBlockItemTab = block -> CreativeModeTab.TAB_MISC;
 
 	protected final HashMap<Class<?>, String> registryClasses = new HashMap<>();
 
@@ -126,7 +125,7 @@ public class AnnotationProcessor {
 		ownerModID = modid;
 	}
 
-	public void setAutoBlockItemTab(Function<Block, ItemGroup> tab) { this.autoBlockItemTab = tab; }
+	public void setAutoBlockItemTab(Function<Block, CreativeModeTab> tab) { this.autoBlockItemTab = tab; }
 
 	public void afterInit(Runnable toRun) {
 		this.afterInit = toRun;
@@ -170,16 +169,16 @@ public class AnnotationProcessor {
 
 		// Registry Annotations
 		addListenerIfNotIgnored(Block.class, this::registerBlocks);
-		addListenerIfNotIgnored(ContainerType.class, this::registerContainerTypes);
-		addListenerIfNotIgnored(Effect.class, this::registerEffects);
+		addListenerIfNotIgnored(MenuType.class, this::registerMenuTypes);
+		addListenerIfNotIgnored(MobEffect.class, this::registerEffects);
 		addListenerIfNotIgnored(Potion.class, this::registerPotionTypes);
 		addListenerIfNotIgnored(Fluid.class, this::registerFluids);
 		addListenerIfNotIgnored(Item.class, this::registerItems);
 		addListenerIfNotIgnored(ParticleType.class, this::registerParticleTypes);
 		addListenerIfNotIgnored(SoundEvent.class, this::registerSoundEvents);
 		addListenerIfNotIgnored(Attribute.class, this::registerAttributes);
-		addListenerIfNotIgnored(IRecipeSerializer.class, this::registerRecipeTypes);
-		addListenerIfNotIgnored(TileEntityType.class, this::registerTileEntityTypes);
+		addListenerIfNotIgnored(RecipeSerializer.class, this::registerRecipeTypes);
+		addListenerIfNotIgnored(BlockEntityType.class, this::registerTileEntityTypes);
 		addListenerIfNotIgnored(EntityType.class, this::registerEntityTypes);
 
 		modBus.addListener(this::registerCustomRegistries);
@@ -210,14 +209,12 @@ public class AnnotationProcessor {
 	private void initRegistryClasses() {
 		final List<ModFileScanData.AnnotationData> regAnnotations = ModList.get().getAllScanData().stream()
 				.map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
-				.filter(a -> a.getAnnotationType().equals(Type.getType(RegistryHolder.class)))
-				.collect(Collectors.toList());
+				.filter(a -> a.annotationType().equals(Type.getType(RegistryHolder.class))).toList();
 
-		regAnnotations.stream().filter(a -> Type.getType(RegistryHolder.class).equals(a.getAnnotationType()))
-				.filter(a -> a.getTargetType() == ElementType.TYPE).forEach(data -> {
+		regAnnotations.stream().filter(a -> Type.getType(RegistryHolder.class).equals(a.annotationType()))
+				.filter(a -> a.targetType() == ElementType.TYPE).forEach(data -> {
 					try {
-						Class<?> clazz = Class.forName(data.getClassType().getClassName(), false,
-								getClass().getClassLoader());
+						Class<?> clazz = Class.forName(data.clazz().getClassName(), false, getClass().getClassLoader());
 						if (clazz.getAnnotation(RegistryHolder.class).modid().equals(ownerModID)
 								&& clazz.getAnnotation(RegistryHolder.class).enabled()) {
 							if (!registryClasses.containsKey(clazz)) {
@@ -233,13 +230,12 @@ public class AnnotationProcessor {
 	private void initModules() {
 		final List<ModFileScanData.AnnotationData> moduleAnnotations = ModList.get().getAllScanData().stream()
 				.map(ModFileScanData::getAnnotations).flatMap(Collection::stream)
-				.filter(a -> a.getAnnotationType().equals(Type.getType(Module.class))).collect(Collectors.toList());
+				.filter(a -> a.annotationType().equals(Type.getType(Module.class))).toList();
 
-		moduleAnnotations.stream().filter(a -> Type.getType(Module.class).equals(a.getAnnotationType()))
-				.filter(a -> a.getTargetType() == ElementType.TYPE).forEach(data -> {
+		moduleAnnotations.stream().filter(a -> Type.getType(Module.class).equals(a.annotationType()))
+				.filter(a -> a.targetType() == ElementType.TYPE).forEach(data -> {
 					try {
-						Class<?> clazz = Class.forName(data.getClassType().getClassName(), false,
-								getClass().getClassLoader());
+						Class<?> clazz = Class.forName(data.clazz().getClassName(), false, getClass().getClassLoader());
 						RL id = clazz.getAnnotation(Module.class).id();
 						if (id.modid().equals(ownerModID)) {
 							moduleClasses.put(clazz, id.modid());
@@ -247,10 +243,10 @@ public class AnnotationProcessor {
 							Constructor<?> constructor = clazz.getConstructor();
 							constructor.setAccessible(true);
 							Object instance = constructor.newInstance();
-							if (instance instanceof IModule) {
+							if (instance instanceof IModule module) {
 								ResourceLocation name = new ResourceLocation(id.modid(), id.path());
 								if (!modules.containsKey(name)) {
-									modules.put(name, (IModule) instance);
+									modules.put(name, module);
 								} else {
 									throw new ProcessingException("Duplicate module id " + name);
 								}
@@ -292,7 +288,7 @@ public class AnnotationProcessor {
 		registerFieldsWithAnnotation(event, RegisterItem.class, RegisterItem::value, of(ITEMS));
 		registerFieldsWithAnnotation(Lists.newArrayList(registryClasses.keySet()), event, RegisterBlockItem.class,
 				(classAn, fieldAn, obj) -> {
-					if (obj instanceof BlockItem) { return ((BlockItem) obj).getBlock().getRegistryName(); }
+					if (obj instanceof BlockItem blockItem) { return blockItem.getBlock().getRegistryName(); }
 					throw new ProcessingException("Invalid BlockItem");
 				}, Optional.empty());
 		registerAutoBIs(event);
@@ -303,8 +299,7 @@ public class AnnotationProcessor {
 				.forEach(field -> {
 					try {
 						Object value = field.get(field.getDeclaringClass());
-						if (value instanceof Block) {
-							Block block = (Block) value;
+						if (value instanceof Block block) {
 							BlockItem item = new BlockItem(block,
 									new Item.Properties().tab(autoBlockItemTab.apply(block)));
 							event.getRegistry().register(item.setRegistryName(block.getRegistryName()));
@@ -327,8 +322,8 @@ public class AnnotationProcessor {
 		registerFieldsWithAnnotation(event, RegisterFluid.class, RegisterFluid::value, of(FLUIDS));
 	}
 
-	private void registerEffects(final RegistryEvent.Register<Effect> event) {
-		registerFieldsWithAnnotation(event, RegisterEffect.class, RegisterEffect::value, of(EFFECTS));
+	private void registerEffects(final RegistryEvent.Register<MobEffect> event) {
+		registerFieldsWithAnnotation(event, RegisterMobEffect.class, RegisterMobEffect::value, of(MOB_EFFECTS));
 	}
 
 	private void registerPotionTypes(final RegistryEvent.Register<Potion> event) {
@@ -348,14 +343,13 @@ public class AnnotationProcessor {
 				Optional.of(ENTITY_TYPES));
 	}
 
-	private void registerTileEntityTypes(final RegistryEvent.Register<TileEntityType<?>> event) {
-		registerFieldsWithAnnotation(event, RegisterTileEntityType.class, RegisterTileEntityType::value,
-				Optional.of(TILE_ENTITY_TYPES));
+	private void registerTileEntityTypes(final RegistryEvent.Register<BlockEntityType<?>> event) {
+		registerFieldsWithAnnotation(event, RegisterBlockEntityType.class, RegisterBlockEntityType::value,
+				Optional.of(BLOCK_ENTITY_TYPES));
 	}
 
-	private void registerContainerTypes(final RegistryEvent.Register<ContainerType<?>> event) {
-		registerFieldsWithAnnotation(event, RegisterContainerType.class, RegisterContainerType::value,
-				of(CONTAINER_TYPES));
+	private void registerMenuTypes(final RegistryEvent.Register<MenuType<?>> event) {
+		registerFieldsWithAnnotation(event, RegisterMenuType.class, RegisterMenuType::value, of(MENU_TYPES));
 	}
 
 	private void registerParticleTypes(final RegistryEvent.Register<ParticleType<?>> event) {
@@ -363,20 +357,19 @@ public class AnnotationProcessor {
 				of(PARTICLE_TYPES));
 	}
 
-	private void registerRecipeTypes(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
+	private void registerRecipeTypes(final RegistryEvent.Register<RecipeSerializer<?>> event) {
 		ReflectionHelper.getFieldsAnnotatedWith(Lists.newArrayList(registryClasses.keySet()), RegisterRecipeType.class)
 				.forEach(field -> {
-					if (!field.isAccessible()) { return; }
+					field.setAccessible(true);
 					try {
-						if (field.get(field.getDeclaringClass()) instanceof IRecipeType<?>) {
-							IRecipeType<?> type = (IRecipeType<?>) field.get(field.getDeclaringClass());
+						if (field.get(field.getDeclaringClass())instanceof RecipeType<?> type) {
 							Registry.register(Registry.RECIPE_TYPE,
 									new ResourceLocation(getModID(field.getDeclaringClass()),
 											field.getAnnotation(RegisterRecipeType.class).value()),
 									type);
 							String modid = getModID(field.getDeclaringClass());
 							if (RECIPE_TYPES.containsKey(modid)) {
-								List<IRecipeType<?>> oldList = RECIPE_TYPES.get(modid);
+								List<RecipeType<?>> oldList = RECIPE_TYPES.get(modid);
 								oldList.add(type);
 								RECIPE_TYPES.put(modid, oldList);
 							} else {
@@ -464,8 +457,7 @@ public class AnnotationProcessor {
 				if (objectClass.isInstance(fieldObject)) {
 					registry.set((T) field.get(field.getDeclaringClass()));
 					isGood = true;
-				} else if (fieldObject instanceof BetterRegistryObject<?>) {
-					BetterRegistryObject<?> regObj = (BetterRegistryObject<?>) fieldObject;
+				} else if (fieldObject instanceof BetterRegistryObject<?> regObj) {
 					Method getDecValueMet = regObj.getClass().getDeclaredMethod("getDeclaredValue", new Class<?>[] {});
 					getDecValueMet.setAccessible(true);
 					Supplier<?> declaredValue = (Supplier<?>) getDecValueMet.invoke(regObj, new Object[] {});
@@ -480,10 +472,9 @@ public class AnnotationProcessor {
 							field.getAnnotation(annotation), registry.get());
 					registry.get().setRegistryName(name);
 					event.getRegistry().register(registry.get());
-					outputMap.ifPresent(output -> {
-						output.computeIfAbsent(modid.apply(field.getDeclaringClass()), key -> Lists.newArrayList())
-								.add(registry.get());
-					});
+					outputMap.ifPresent(output -> output
+							.computeIfAbsent(modid.apply(field.getDeclaringClass()), key -> Lists.newArrayList())
+							.add(registry.get()));
 					if (isSupplier) {
 						BetterRegistryObject<?> regObj = (BetterRegistryObject<?>) fieldObject;
 						Method setNameMethod = regObj.getClass().getDeclaredMethod("setName", ResourceLocation.class);

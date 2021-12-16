@@ -27,12 +27,11 @@
 
 package com.matyrobbrt.lib.datagen.recipe.vanilla;
 
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 /**
  * Class for storing key ingredients for Vanilla Crafting Recipes
@@ -79,7 +78,7 @@ public class KeyIngredient {
 	 * @param key the key of the ingredient
 	 * @param tag the tag of the ingredient
 	 */
-	public KeyIngredient(Character key, ITag<Item> tag) {
+	public KeyIngredient(Character key, net.minecraft.tags.Tag<Item> tag) {
 		this.key = key;
 		this.ingredient = Ingredient.of(tag);
 	}

@@ -30,15 +30,15 @@ package com.matyrobbrt.lib.datagen.patchouli.page;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 public class SpotlightPage implements IPatchouliPage {
 	
 	public String text;
 	public Item item;
 	
-	public SpotlightPage(IItemProvider item, String text) {
+	public SpotlightPage(ItemLike item, String text) {
 		this.item = item.asItem();
 		this.text = text;
 	}

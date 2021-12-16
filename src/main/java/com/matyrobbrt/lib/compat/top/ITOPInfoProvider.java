@@ -27,7 +27,7 @@
 
 package com.matyrobbrt.lib.compat.top;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Implement this class in a {@link Block} class. In order to not throw

@@ -48,16 +48,15 @@ public class WrenchIMC {
 	public static List<IWrenchBehaviour> getBehaviours() { return new ArrayList<>(BEHAVIOURS); }
 
 	static {
-		BEHAVIOURS.add((wrench, mode, player, state, pos, level) -> state.getBlock() instanceof IWrenchUsable
-				? ((IWrenchUsable) state.getBlock()).getBehaviour().executeAction(wrench, mode, player, state, pos,
-						level)
+		BEHAVIOURS.add((wrench, mode, player, state, pos, level) -> state.getBlock()instanceof IWrenchUsable usable
+				? usable.getBehaviour().executeAction(wrench, mode, player, state, pos, level)
 				: WrenchResult.FAIL);
 	}
 
 	@SubscribeEvent
 	public static void processIMC(final InterModProcessEvent event) {
-		event.getIMCStream().filter(msg -> msg.getMethod() == REGISTER_WRENCH_BEHAVIOUR_METHOD).forEach(imc -> {
-			Object msg = imc.getMessageSupplier().get();
+		event.getIMCStream().filter(msg -> msg.method() == REGISTER_WRENCH_BEHAVIOUR_METHOD).forEach(imc -> {
+			Object msg = imc.messageSupplier().get();
 			if (msg instanceof IWrenchBehaviour) {
 				BEHAVIOURS.add((IWrenchBehaviour) msg);
 			}

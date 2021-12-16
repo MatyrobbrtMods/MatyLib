@@ -6,32 +6,24 @@ import com.matyrobbrt.lib.wrench.IWrenchBehaviour;
 import com.matyrobbrt.lib.wrench.IWrenchUsable;
 import com.matyrobbrt.lib.wrench.WrenchResult;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
-class TestBlock extends Block implements IWrenchUsable {
+class TestBlock extends BaseEntityBlock implements IWrenchUsable {
 
 	public TestBlock(Properties properties) {
 		super(properties);
 	}
 
 	@Override
-	public boolean hasTileEntity(net.minecraft.block.BlockState state) {
-		return true;
-	}
-
-	@Override
-	public TileEntity createTileEntity(net.minecraft.block.BlockState state, net.minecraft.world.IBlockReader world) {
-		return TestModule.TE_TYPE.create();
-	}
-
-	@Override
-	public void setPlacedBy(World pLevel, BlockPos pPos, BlockState pState, LivingEntity pPlacer, ItemStack pStack) {
+	public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, LivingEntity pPlacer, ItemStack pStack) {
 		if (pLevel.isClientSide()) { return; }
 
 		MultiblockDriver<TestMultiblock> mbDriver = TestWSD.getInstance(pLevel).getDriver();
@@ -40,7 +32,7 @@ class TestBlock extends Block implements IWrenchUsable {
 	}
 
 	@Override
-	public void onRemove(BlockState pState, World pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		if (pLevel.isClientSide()) { return; }
 
 		MultiblockHelper.onBlockRemoved(TestWSD.getInstance(pLevel).getDriver(), pPos);
@@ -52,6 +44,19 @@ class TestBlock extends Block implements IWrenchUsable {
 			System.out.println("yes");
 			return WrenchResult.CONSUME;
 		};
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+			BlockEntityType<T> type) {
+		return !level.isClientSide() && state != null
+				? BaseEntityBlock.createTickerHelper(type, TestModule.TE_TYPE, (level$, pos, state$, te) -> te.tick())
+				: null;
+	}
+
+	@Override
+	public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
+		return new TestTileEntity(p_153215_, p_153216_);
 	}
 
 }

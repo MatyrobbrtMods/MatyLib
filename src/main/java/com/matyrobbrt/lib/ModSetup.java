@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 import com.matyrobbrt.lib.registry.annotation.AnnotationProcessor;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;

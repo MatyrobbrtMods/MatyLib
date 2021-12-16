@@ -27,9 +27,9 @@
 
 package com.matyrobbrt.lib.datagen.recipe;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class IngredientInput {
 
@@ -46,7 +46,7 @@ public class IngredientInput {
 		this.count = count;
 	}
 	
-	public IngredientInput(ITag<Item> tag, int count) {
+	public IngredientInput(Tag<Item> tag, int count) {
 		this.ingredient = Ingredient.of(tag);
 		this.count = count;
 	}

@@ -7,24 +7,30 @@ import com.matyrobbrt.lib.multiblock.MultiblockDriver;
 import com.matyrobbrt.lib.multiblock.wsd.MultiblockDriverWSD;
 import com.matyrobbrt.lib.util.helper.TernaryHelper;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 
 final class TestWSD extends MultiblockDriverWSD<TestMultiblock> {
 
 	public static final String ID = "test_multiblock";
 
 	private TestWSD() {
-		super(ID);
 	}
 
-	public static TestWSD getInstance(World level) {
-		return getInstance((ServerWorld) level);
+	public static TestWSD load(CompoundTag tag) {
+		TestWSD wsd = new TestWSD();
+		wsd.driver.load(tag);
+		return wsd;
 	}
 
-	public static TestWSD getInstance(ServerWorld level) {
-		return level.getDataStorage().computeIfAbsent(TestWSD::new, ID);
+	public static TestWSD getInstance(Level level) {
+		return getInstance((ServerLevel) level);
+	}
+
+	public static TestWSD getInstance(ServerLevel level) {
+		return level.getDataStorage().computeIfAbsent(TestWSD::load, TestWSD::new, ID);
 	}
 
 	private final MultiblockDriver<TestMultiblock> driver = new MultiblockDriver.Builder<TestMultiblock>()

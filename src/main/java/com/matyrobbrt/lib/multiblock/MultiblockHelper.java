@@ -42,9 +42,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.Sets;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 
 public class MultiblockHelper {
 
@@ -58,8 +58,8 @@ public class MultiblockHelper {
 	 * @param driver
 	 * @return
 	 */
-	public static <T extends IMultiblock> boolean merge(World level, BlockPos thisPos, MultiblockDriver<T> driver) {
-		BiFunction<World, BlockPos, IMultiblockComponent> componenetGetter = driver.getComponentGetter();
+	public static <T extends IMultiblock> boolean merge(Level level, BlockPos thisPos, MultiblockDriver<T> driver) {
+		BiFunction<Level, BlockPos, IMultiblockComponent> componenetGetter = driver.getComponentGetter();
 		IMultiblockConnector<T> connector = driver.getConnector();
 		BiPredicate<T, T> mergeChecker = driver.getMergeChecker();
 
@@ -119,9 +119,9 @@ public class MultiblockHelper {
 	 * @param driver
 	 * @param newMb
 	 */
-	public static <T extends IMultiblock> void addBlock(World level, BlockPos thisPos, MultiblockDriver<T> driver,
+	public static <T extends IMultiblock> void addBlock(Level level, BlockPos thisPos, MultiblockDriver<T> driver,
 			T newMb) {
-		BiFunction<World, BlockPos, IMultiblockComponent> componentGetter = driver.getComponentGetter();
+		BiFunction<Level, BlockPos, IMultiblockComponent> componentGetter = driver.getComponentGetter();
 		IMultiblockConnector<T> connector = driver.getConnector();
 
 		int mbId = driver.createId();
@@ -141,7 +141,7 @@ public class MultiblockHelper {
 	 * @param driver
 	 * @return all the positions the multiblock has
 	 */
-	public static <T extends IMultiblock> Set<BlockPos> findMultiblock(World level, BlockPos pos,
+	public static <T extends IMultiblock> Set<BlockPos> findMultiblock(Level level, BlockPos pos,
 			MultiblockDriver<T> driver) {
 		Set<BlockPos> positions = new HashSet<>();
 		IMultiblockComponent holder = driver.getComponentGetter().apply(level, pos);
@@ -151,8 +151,8 @@ public class MultiblockHelper {
 		return positions;
 	}
 
-	private static <T extends IMultiblock> void findMultiblockInt(World level, BlockPos pos,
-			BiFunction<World, BlockPos, IMultiblockComponent> getter, Set<BlockPos> positions) {
+	private static <T extends IMultiblock> void findMultiblockInt(Level level, BlockPos pos,
+			BiFunction<Level, BlockPos, IMultiblockComponent> getter, Set<BlockPos> positions) {
 		positions.add(pos);
 		for (Direction direction : Direction.values()) {
 			BlockPos p = pos.relative(direction);
@@ -164,7 +164,7 @@ public class MultiblockHelper {
 		}
 	}
 
-	private static <T extends IMultiblock> void setBlocksToNetwork(World level, BlockPos pos, @Nonnull Set<Integer> ids,
+	private static <T extends IMultiblock> void setBlocksToNetwork(Level level, BlockPos pos, @Nonnull Set<Integer> ids,
 			@Nullable Set<BlockPos> done, int newId, MultiblockDriver<T> driver) {
 		IMultiblockComponent componenent = driver.getComponent(level, pos);
 		if (componenent == null) { return; }
@@ -196,9 +196,8 @@ public class MultiblockHelper {
 	 * @param thisPos
 	 * @param driver
 	 */
-	public static <T extends IMultiblock> void removeBlock(World level, BlockPos thisPos, MultiblockDriver<T> driver) {
-
-		BiFunction<World, BlockPos, IMultiblockComponent> compoenentGetter = driver.getComponentGetter();
+	public static <T extends IMultiblock> void removeBlock(Level level, BlockPos thisPos, MultiblockDriver<T> driver) {
+		BiFunction<Level, BlockPos, IMultiblockComponent> compoenentGetter = driver.getComponentGetter();
 		IMultiblockComponent thisCompoenent = compoenentGetter.apply(level, thisPos);
 		T thisData = driver.get(thisCompoenent.getMultiblockId());
 

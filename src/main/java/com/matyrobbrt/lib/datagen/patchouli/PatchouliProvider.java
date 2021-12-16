@@ -48,8 +48,8 @@ import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliCategory;
 import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliEntry;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 
 /**
  * Provider for Patchouli Data Generators
@@ -57,7 +57,7 @@ import net.minecraft.data.IDataProvider;
  * @author matyrobbrt
  *
  */
-public abstract class PatchouliProvider implements IDataProvider {
+public abstract class PatchouliProvider implements DataProvider {
 
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -78,7 +78,7 @@ public abstract class PatchouliProvider implements IDataProvider {
 	}
 
 	@Override
-	public void run(DirectoryCache pCache) throws IOException {
+	public void run(HashCache pCache) throws IOException {
 		try {
 			writeBook(pCache);
 		} catch (Exception e1) {
@@ -96,20 +96,20 @@ public abstract class PatchouliProvider implements IDataProvider {
 		}
 	}
 
-	private void writeEntries(DirectoryCache cache) {
+	private void writeEntries(HashCache cache) {
 		Path outputFolder = generator.getOutputFolder();
 		entries.forEach(entry -> {
 			Path path = outputFolder.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + language
 					+ "/entries/" + entry.category + "/" + entry.fileName + ".json");
 			try {
-				IDataProvider.save(GSON, cache, entry.serialize(), path);
+				DataProvider.save(GSON, cache, entry.serialize(), path);
 			} catch (IOException e) {
 				LOGGER.error("Couldn't generate entry!", path, e);
 			}
 		});
 	}
 
-	private void writeCategories(DirectoryCache cache) throws Exception {
+	private void writeCategories(HashCache cache) throws Exception {
 		Path outputFolder = generator.getOutputFolder();
 		Class<?> clazz = this.getClass();
 		for (Field field : clazz.getDeclaredFields()) {
@@ -120,7 +120,7 @@ public abstract class PatchouliProvider implements IDataProvider {
 					Path path = outputFolder.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + language
 							+ "/categories/" + category.fileName + ".json");
 					try {
-						IDataProvider.save(GSON, cache, category.serialize(), path);
+						DataProvider.save(GSON, cache, category.serialize(), path);
 					} catch (IOException e) {
 						LOGGER.error("Couldn't generate category!", path, e);
 					}
@@ -131,14 +131,14 @@ public abstract class PatchouliProvider implements IDataProvider {
 			Path path = outputFolder.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + language
 					+ "/categories/" + category.fileName + ".json");
 			try {
-				IDataProvider.save(GSON, cache, category.serialize(), path);
+				DataProvider.save(GSON, cache, category.serialize(), path);
 			} catch (IOException e) {
 				LOGGER.error("Couldn't generate category!", path, e);
 			}
 		});
 	}
 
-	private void writeBook(DirectoryCache cache) throws Exception {
+	private void writeBook(HashCache cache) throws Exception {
 		Path outputFolder = generator.getOutputFolder();
 		Class<?> clazz = this.getClass();
 		for (Field field : clazz.getDeclaredFields()) {
@@ -149,7 +149,7 @@ public abstract class PatchouliProvider implements IDataProvider {
 					Path path = outputFolder
 							.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + "book.json");
 					try {
-						IDataProvider.save(GSON, cache, book.serialize(), path);
+						DataProvider.save(GSON, cache, book.serialize(), path);
 					} catch (IOException e) {
 						LOGGER.error("Couldn't generate book!", path, e);
 					}

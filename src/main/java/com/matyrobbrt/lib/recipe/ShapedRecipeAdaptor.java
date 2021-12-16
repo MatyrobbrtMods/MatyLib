@@ -29,19 +29,19 @@ package com.matyrobbrt.lib.recipe;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
-public abstract class ShapedRecipeAdaptor implements ICraftingRecipe, IShapedRecipe<CraftingInventory> {
+public abstract class ShapedRecipeAdaptor implements CraftingRecipe, IShapedRecipe<CraftingContainer> {
 
 	private final ShapedRecipe recipe;
 
@@ -56,7 +56,7 @@ public abstract class ShapedRecipeAdaptor implements ICraftingRecipe, IShapedRec
 
 	@Override
 	@Nonnull
-	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingInventory inv) {
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingContainer inv) {
 		return recipe.getRemainingItems(inv);
 	}
 
@@ -84,13 +84,13 @@ public abstract class ShapedRecipeAdaptor implements ICraftingRecipe, IShapedRec
 	public int getRecipeHeight() { return recipe.getRecipeHeight(); }
 
 	@Override
-	public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World worldIn) {
-		return recipe.matches(inv, worldIn);
+	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
+		return recipe.matches(inv, level);
 	}
 
 	@Override
 	@Nonnull
-	public ItemStack assemble(@Nonnull CraftingInventory inv) {
+	public ItemStack assemble(@Nonnull CraftingContainer inv) {
 		return recipe.assemble(inv);
 	}
 
@@ -104,6 +104,6 @@ public abstract class ShapedRecipeAdaptor implements ICraftingRecipe, IShapedRec
 
 	@Override
 	@Nonnull
-	public IRecipeType<?> getType() { return recipe.getType(); }
+	public RecipeType<?> getType() { return recipe.getType(); }
 
 }

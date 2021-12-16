@@ -29,9 +29,9 @@ package com.matyrobbrt.lib.compat.curios;
 
 import java.util.function.Predicate;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 

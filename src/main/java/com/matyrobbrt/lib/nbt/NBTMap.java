@@ -29,11 +29,11 @@ package com.matyrobbrt.lib.nbt;
 
 import java.util.function.Function;
 
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.Tag;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class NBTMap<K extends INBTSerializable<DK>, V extends INBTSerializable<DV>, DK extends INBT, DV extends INBT>
+public class NBTMap<K extends INBTSerializable<DK>, V extends INBTSerializable<DV>, DK extends Tag, DV extends Tag>
 extends BaseNBTMap<K, V, DK, DV> {
 
 	private static final long serialVersionUID = -4312731322694994632L;

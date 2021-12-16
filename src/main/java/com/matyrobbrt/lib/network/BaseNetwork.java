@@ -30,17 +30,17 @@ package com.matyrobbrt.lib.network;
 import java.util.Optional;
 import java.util.function.Function;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 /**
  * A base class for networks
@@ -57,29 +57,29 @@ public abstract class BaseNetwork {
 	}
 
 	protected static <M extends INetworkMessage> void registerClientToServer(SimpleChannel channel, Class<M> type,
-			Function<PacketBuffer, M> decoder) {
+			Function<FriendlyByteBuf, M> decoder) {
 		registerMessage(channel, type, decoder, NetworkDirection.PLAY_TO_SERVER);
 	}
 
 	protected static <M extends INetworkMessage> void registerServerToClient(SimpleChannel channel, Class<M> type,
-			Function<PacketBuffer, M> decoder) {
+			Function<FriendlyByteBuf, M> decoder) {
 		registerMessage(channel, type, decoder, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	private static <M extends INetworkMessage> void registerMessage(SimpleChannel channel, Class<M> msgClass,
-			Function<PacketBuffer, M> decoder, NetworkDirection direction) {
+			Function<FriendlyByteBuf, M> decoder, NetworkDirection direction) {
 		channel.registerMessage(nextId(), msgClass, INetworkMessage::encode, decoder, INetworkMessage::handle,
 				Optional.of(direction));
 	}
 
-	public static <MSG> void sendToAllTracking(SimpleChannel channel, MSG message, TileEntity tile) {
+	public static <MSG> void sendToAllTracking(SimpleChannel channel, MSG message, BlockEntity tile) {
 		sendToAllTracking(channel, message, tile.getLevel(), tile.getBlockPos());
 	}
 
 	@SuppressWarnings("resource")
-	public static <MSG> void sendToAllTracking(SimpleChannel channel, MSG message, World world, BlockPos pos) {
-		if (world instanceof ServerWorld) {
-			((ServerWorld) world).getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)
+	public static <MSG> void sendToAllTracking(SimpleChannel channel, MSG message, Level world, BlockPos pos) {
+		if (world instanceof ServerLevel) {
+			((ServerLevel) world).getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)
 					.forEach(p -> sendTo(channel, message, p));
 		} else {
 			channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos.getX() >> 4, pos.getZ() >> 4)),
@@ -87,9 +87,9 @@ public abstract class BaseNetwork {
 		}
 	}
 
-	public static <MSG> void sendToAllInWorld(SimpleChannel channel, MSG message, World world) {
-		if (world instanceof ServerWorld) {
-			((ServerWorld) world).getPlayers(player -> (player.level == world))
+	public static <MSG> void sendToAllInWorld(SimpleChannel channel, MSG message, Level world) {
+		if (world instanceof ServerLevel) {
+			((ServerLevel) world).getPlayers(player -> (player.level == world))
 					.forEach(p -> sendTo(channel, message, p));
 		} else {
 			channel.send(PacketDistributor.ALL.noArg(), message);
@@ -106,7 +106,7 @@ public abstract class BaseNetwork {
 	 * @param message - the message to send
 	 * @param player  - the player to send it to
 	 */
-	public static <MSG> void sendTo(SimpleChannel channel, MSG message, ServerPlayerEntity player) {
+	public static <MSG> void sendTo(SimpleChannel channel, MSG message, ServerPlayer player) {
 		channel.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 	}
 

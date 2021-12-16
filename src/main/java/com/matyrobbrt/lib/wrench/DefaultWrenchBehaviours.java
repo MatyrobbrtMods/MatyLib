@@ -29,7 +29,7 @@ package com.matyrobbrt.lib.wrench;
 
 import java.util.Arrays;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 public class DefaultWrenchBehaviours {
 

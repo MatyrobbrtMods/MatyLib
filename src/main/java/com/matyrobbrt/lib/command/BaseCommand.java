@@ -29,12 +29,13 @@ package com.matyrobbrt.lib.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public abstract class BaseCommand {
 
-	protected LiteralArgumentBuilder<CommandSource> builder;
+	protected LiteralArgumentBuilder<CommandSourceStack> builder;
 	boolean enabled;
 	int permissionLevel;
 
@@ -46,7 +47,7 @@ public abstract class BaseCommand {
 
 	public int getPermissionLevel() { return permissionLevel; }
 
-	public LiteralArgumentBuilder<CommandSource> getBuilder() { return builder; }
+	public LiteralArgumentBuilder<CommandSourceStack> getBuilder() { return builder; }
 
 	public abstract void build(LiteralArgumentBuilder<CommandSource> builder);
 

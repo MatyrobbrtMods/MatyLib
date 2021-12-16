@@ -25,36 +25,35 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.compat;
+package com.matyrobbrt.lib.registry.annotation;
 
-import com.matyrobbrt.lib.MatyLib;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import vazkii.patchouli.api.PatchouliAPI;
+@Documented
+@Retention(RUNTIME)
+@Target({
+		FIELD
+})
+/**
+ * Registers the {@link TileEntityType} that is represented by the field that
+ * has this annotation. For the TileEntityType to be registered the class in
+ * which the field is has to be annotated with {@link RegistryHolder}
+ * 
+ * @author matyrobbrt
+ *
+ */
+public @interface RegisterBlockEntityType {
 
-public class PatchouliUtils {
-
-	public static void openBookGUI(ServerPlayerEntity player, ResourceLocation id) {
-		if (MatyLib.patchouliLoaded) {
-			PatchouliAPI.get().openBookGUI(player, id);
-		} else {
-			player.sendMessage(new StringTextComponent(TextFormatting.RED + "Patchouli is missing! No manual present"),
-					Util.NIL_UUID);
-		}
-	}
-
-	public static void openBookEntry(ServerPlayerEntity player, ResourceLocation id, ResourceLocation entry, int page) {
-		if (MatyLib.patchouliLoaded) {
-			PatchouliAPI.get().openBookEntry(player, id, entry, page);
-		} else {
-			player.sendMessage(new StringTextComponent(TextFormatting.RED + "Patchouli is missing! No manual present"),
-					Util.NIL_UUID);
-		}
-	}
-
+	/**
+	 * The registry name of the TileEntityType (the modid is specified by the
+	 * {@link RegistryHolder} on the class the field is in)
+	 * 
+	 * @return
+	 */
+	String value();
 }

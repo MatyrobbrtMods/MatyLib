@@ -32,8 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -43,23 +43,23 @@ import net.minecraftforge.common.util.INBTSerializable;
  *
  * @param <K> the type of the keys
  * @param <V> the type of the values
- * @param <KNBT> the NBT type used for the keys
- * @param <VNBT> the NBT type used for the values
+ * @param <KTAG> the NBT type used for the keys
+ * @param <VTAG> the NBT type used for the values
  */
 @SuppressWarnings("unchecked")
-public class BaseNBTMap<K, V, KNBT extends INBT, VNBT extends INBT> extends LinkedHashMap<K, V>
-		implements INBTSerializable<CompoundNBT> {
+public class BaseNBTMap<K, V, KTAG extends Tag, VTAG extends Tag> extends LinkedHashMap<K, V>
+		implements INBTSerializable<CompoundTag> {
 
 	private static final long serialVersionUID = 3700042578259834614L;
 
-	private final transient Function<K, KNBT> keySerializer;
-	private final transient Function<V, VNBT> valueSerializer;
+	private final transient Function<K, KTAG> keySerializer;
+	private final transient Function<V, VTAG> valueSerializer;
 
-	private final transient Function<KNBT, K> keyDeserializer;
-	private final transient Function<VNBT, V> valueDeserializer;
+	private final transient Function<KTAG, K> keyDeserializer;
+	private final transient Function<VTAG, V> valueDeserializer;
 
-	public BaseNBTMap(Function<K, KNBT> keySerializer, Function<V, VNBT> valueSerializer, Function<KNBT, K> keyDeserializer,
-			Function<VNBT, V> valueDeserializer) {
+	public BaseNBTMap(Function<K, KTAG> keySerializer, Function<V, VTAG> valueSerializer, Function<KTAG, K> keyDeserializer,
+			Function<VTAG, V> valueDeserializer) {
 		super();
 		this.keySerializer = keySerializer;
 		this.valueSerializer = valueSerializer;
@@ -68,11 +68,11 @@ public class BaseNBTMap<K, V, KNBT extends INBT, VNBT extends INBT> extends Link
 	}
 
 	@Override
-	public CompoundNBT serializeNBT() {
-		CompoundNBT tag = new CompoundNBT();
+	public CompoundTag serializeNBT() {
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("size", size());
 		for (int i = 0; i < size(); i++) {
-			CompoundNBT pairTag = new CompoundNBT();
+			CompoundTag pairTag = new CompoundTag();
 			pairTag.put("key", keySerializer.apply(getKeys().get(i)));
 			pairTag.put("value", valueSerializer.apply(getValues().get(i)));
 			tag.put(String.valueOf(i), pairTag);
@@ -81,12 +81,12 @@ public class BaseNBTMap<K, V, KNBT extends INBT, VNBT extends INBT> extends Link
 	}
 
 	@Override
-	public void deserializeNBT(CompoundNBT nbt) {
+	public void deserializeNBT(CompoundTag nbt) {
 		int size = nbt.getInt("size");
 		for (int i = 0; i < size; i++) {
-			CompoundNBT pairNbt = nbt.getCompound(String.valueOf(i));
-			K key = keyDeserializer.apply((KNBT) pairNbt.get("key"));
-			V value = valueDeserializer.apply((VNBT) pairNbt.get("value"));
+			CompoundTag pairNbt = nbt.getCompound(String.valueOf(i));
+			K key = keyDeserializer.apply((KTAG) pairNbt.get("key"));
+			V value = valueDeserializer.apply((VTAG) pairNbt.get("value"));
 			put(key, value);
 		}
 	}

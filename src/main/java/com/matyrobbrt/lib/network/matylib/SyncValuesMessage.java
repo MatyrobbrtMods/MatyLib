@@ -33,16 +33,16 @@ import com.matyrobbrt.lib.network.INetworkMessage;
 import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.network.NetworkEvent.Context;
 
 public class SyncValuesMessage implements INetworkMessage {
 
@@ -51,24 +51,24 @@ public class SyncValuesMessage implements INetworkMessage {
 	}
 
 	public final BlockPos pos;
-	public final CompoundNBT nbt;
+	public final CompoundTag nbt;
 	public final Direction direction;
 
 	public SyncValuesMessage(BlockPos pos, BaseTileEntity te, Direction direction) {
 		this.pos = pos;
-		this.nbt = SyncValue.Helper.writeSyncValues(te.getSyncFields(), te, te.save(new CompoundNBT()),
+		this.nbt = SyncValue.Helper.writeSyncValues(te.getSyncFields(), te, te.save(new CompoundTag()),
 				SyncValue.SyncType.PACKET);
 		this.direction = direction;
 	}
 
-	public SyncValuesMessage(BlockPos pos, CompoundNBT nbt, Direction direction) {
+	public SyncValuesMessage(BlockPos pos, CompoundTag nbt, Direction direction) {
 		this.pos = pos;
 		this.nbt = nbt;
 		this.direction = direction;
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer) {
+	public void encode(FriendlyByteBuf buffer) {
 		buffer.writeBlockPos(pos);
 		buffer.writeNbt(nbt);
 		buffer.writeEnum(direction);
@@ -86,25 +86,25 @@ public class SyncValuesMessage implements INetworkMessage {
 
 	@SuppressWarnings("resource")
 	private static void handleClient(SyncValuesMessage syncValuesMessage, Context context) {
-		ClientWorld client = Minecraft.getInstance().level;
+		ClientLevel client = Minecraft.getInstance().level;
 		if (client == null) { return; }
-		TileEntity tile = client.getBlockEntity(syncValuesMessage.pos);
+		BlockEntity tile = client.getBlockEntity(syncValuesMessage.pos);
 		if (tile != null && client.isClientSide()) {
-			tile.load(client.getBlockState(syncValuesMessage.pos), syncValuesMessage.nbt);
+			tile.load(syncValuesMessage.nbt);
 		}
 	}
 
 	@SuppressWarnings("unused")
 	private static void handleServer(SyncValuesMessage syncValuesMessage, Context context) {
-		ServerWorld server = context.getSender().getLevel();
+		ServerLevel server = context.getSender().getLevel();
 		if (server == null) { return; }
-		TileEntity tile = server.getBlockEntity(syncValuesMessage.pos);
+		BlockEntity tile = server.getBlockEntity(syncValuesMessage.pos);
 		if (tile != null && !server.isClientSide()) {
-			tile.load(server.getBlockState(syncValuesMessage.pos), syncValuesMessage.nbt);
+			tile.load(syncValuesMessage.nbt);
 		}
 	}
 
-	public static SyncValuesMessage decode(PacketBuffer buffer) {
+	public static SyncValuesMessage decode(FriendlyByteBuf buffer) {
 		return new SyncValuesMessage(buffer.readBlockPos(), buffer.readNbt(), buffer.readEnum(Direction.class));
 	}
 

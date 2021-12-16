@@ -30,14 +30,14 @@ package com.matyrobbrt.lib.datagen.recipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.ItemLike;
 
 public class ItemInput implements IIngredient {
 
-	public final IItemProvider item;
+	public final ItemLike item;
 	public final int count;
 	
-	public ItemInput(IItemProvider item, int count) {
+	public ItemInput(ItemLike item, int count) {
 		this.item = item;
 		this.count = count;
 	}

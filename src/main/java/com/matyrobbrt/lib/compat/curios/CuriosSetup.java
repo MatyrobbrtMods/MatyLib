@@ -34,22 +34,13 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import com.google.common.collect.Multimap;
 import com.matyrobbrt.lib.capability.SimpleCapabilityProvider;
 import com.matyrobbrt.lib.util.ModIDs;
-import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.InterModComms;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -121,23 +112,7 @@ class CuriosSetup extends CurioHandler {
 		}
 
 		@Override
-		public boolean canRender(String identifier, int index, LivingEntity entity) {
-			return getItem().hasRender(stack, entity);
-		}
-
-		@Override
-		@OnlyIn(Dist.CLIENT)
-		public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
-				int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks,
-				float ageInTicks, float netHeadYaw, float headPitch) {
-			EntityRenderer<?> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(livingEntity);
-			if (!(renderer instanceof IEntityRenderer<?, ?>)) { return; }
-			EntityModel<?> model = ((IEntityRenderer<?, ?>) renderer).getModel();
-			if (!(model instanceof BipedModel<?>)) { return; }
-
-			getItem().doRender((BipedModel<?>) model, stack, livingEntity, matrixStack, renderTypeBuffer, light,
-					limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-		}
+		public ItemStack getStack() { return stack; }
 	}
 
 	@Override

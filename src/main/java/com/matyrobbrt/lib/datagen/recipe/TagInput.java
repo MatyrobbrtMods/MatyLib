@@ -30,8 +30,8 @@ package com.matyrobbrt.lib.datagen.recipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
 
 /**
  * Class for defining tag inputs of recipe
@@ -40,7 +40,7 @@ import net.minecraft.tags.ITag;
  */
 public class TagInput implements IIngredient {
 	
-	private final ITag<Item> tag;
+	private final Tag<Item> tag;
 	private final int count;
 
 	/**
@@ -48,7 +48,7 @@ public class TagInput implements IIngredient {
 	 * @param tag the tag of the input
 	 * @param count the count of the input
 	 */
-	public TagInput(ITag<Item> tag, int count) {
+	public TagInput(Tag<Item> tag, int count) {
 		this.tag = tag;
 		this.count = count;
 	}
@@ -57,7 +57,7 @@ public class TagInput implements IIngredient {
 	 * Gets the tag of the input
 	 * @return the tag of the input
 	 */
-	public ITag<Item> getTag() {
+	public Tag<Item> getTag() {
 		return this.tag;
 	}
 

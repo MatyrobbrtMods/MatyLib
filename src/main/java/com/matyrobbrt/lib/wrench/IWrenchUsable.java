@@ -27,7 +27,7 @@
 
 package com.matyrobbrt.lib.wrench;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Implement this class in a {@link Block}, so that you dont need to send IMC

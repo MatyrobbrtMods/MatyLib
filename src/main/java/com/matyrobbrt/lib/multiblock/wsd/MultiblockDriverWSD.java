@@ -30,25 +30,16 @@ package com.matyrobbrt.lib.multiblock.wsd;
 import com.matyrobbrt.lib.multiblock.IMultiblock;
 import com.matyrobbrt.lib.multiblock.MultiblockDriver;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public abstract class MultiblockDriverWSD<T extends IMultiblock> extends WorldSavedData {
-
-	protected MultiblockDriverWSD(String p_i2141_1_) {
-		super(p_i2141_1_);
-	}
+public abstract class MultiblockDriverWSD<T extends IMultiblock> extends SavedData {
 
 	public abstract MultiblockDriver<T> getDriver();
 
 	@Override
-	public void load(CompoundNBT nbt) {
-		getDriver().load(nbt.getCompound("driver"));
-	}
-
-	@Override
-	public CompoundNBT save(CompoundNBT tag) {
-		tag.put("driver", getDriver().save(new CompoundNBT()));
+	public CompoundTag save(CompoundTag tag) {
+		tag.put("driver", getDriver().save(new CompoundTag()));
 		return tag;
 	}
 

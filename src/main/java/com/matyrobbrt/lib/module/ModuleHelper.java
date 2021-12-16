@@ -27,26 +27,26 @@
 
 package com.matyrobbrt.lib.module;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 
 public class ModuleHelper {
 	
-	public static <M extends Container, U extends Screen & IHasContainer<M>> void registerScreen(
-			ContainerType<? extends M> pType, ScreenManager.IScreenFactory<M, U> pFactory) {
-		ScreenManager.register(pType, pFactory);
+	public static <M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> void registerScreen(
+			MenuType<? extends M> pType, MenuScreens.ScreenConstructor<M, U> pFactory) {
+		MenuScreens.register(pType, pFactory);
 	}
 	
 	/* Render Layers */
 	
 	public static void cutout(Block block) {
-		RenderTypeLookup.setRenderLayer(block, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
 	}
 
 }

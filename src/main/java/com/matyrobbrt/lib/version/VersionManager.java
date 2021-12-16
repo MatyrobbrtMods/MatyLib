@@ -42,8 +42,8 @@ import com.google.gson.stream.JsonReader;
 import com.matyrobbrt.lib.MatyLib;
 import com.matyrobbrt.lib.util.ColourCodes;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
 
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -62,12 +62,12 @@ public class VersionManager {
 
 	@SubscribeEvent
 	public static void processIMC(final InterModProcessEvent event) {
-		event.getIMCStream().filter(msg -> msg.getMethod() == VERSIONS_METHOD).forEach(imc -> {
-			Object msg = imc.getMessageSupplier().get();
-			if (msg instanceof String) {
-				VersionList version = processVersion((String) msg);
+		event.getIMCStream().filter(msg -> msg.method() == VERSIONS_METHOD).forEach(imc -> {
+			Object msg = imc.messageSupplier().get();
+			if (msg instanceof String string) {
+				VersionList version = processVersion(string);
 				if (version != null) {
-					MOD_VERSIONS.put(imc.getSenderModId(), version);
+					MOD_VERSIONS.put(imc.senderModId(), version);
 				}
 			}
 		});
@@ -76,7 +76,7 @@ public class VersionManager {
 	@SubscribeEvent
 	public static void onPreInit(final FMLConstructModEvent event) {
 		MOD_VERSIONS.put(MatyLib.MOD_ID,
-				processVersion("https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.16.5/versions.json"));
+				processVersion("https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.18.1/versions.json"));
 	}
 
 	private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation()
@@ -97,7 +97,7 @@ public class VersionManager {
 
 		@SubscribeEvent
 		public static void handle(final PlayerLoggedInEvent event) {
-			PlayerEntity player = event.getPlayer();
+			Player player = event.getPlayer();
 			ModList.get().getModFiles().forEach(modFile -> {
 				modFile.getMods().forEach(modInfo -> {
 					if (VersionManager.MOD_VERSIONS.containsKey(modInfo.getModId())) {
@@ -107,7 +107,7 @@ public class VersionManager {
 									.getMods().get(0).getVersion().toString())) {
 								if (new ComparableVersion(modInfo.getVersion().toString())
 										.compareTo(new ComparableVersion(version.modVersion)) < 0) {
-									player.sendMessage(new StringTextComponent("The mod " + ColourCodes.DARK_PURPLE
+									player.sendMessage(new TextComponent("The mod " + ColourCodes.DARK_PURPLE
 											+ modInfo.getModId() + ColourCodes.RESET
 											+ " is outdated! The latest version is " + ColourCodes.BLUE
 											+ version.modVersion + ColourCodes.RESET + ". Found version "

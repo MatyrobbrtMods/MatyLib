@@ -29,17 +29,17 @@ package com.matyrobbrt.lib.recipe;
 
 import java.util.function.Consumer;
 
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public interface IRecipeBuilder<T extends IRecipe<?>> {
+public interface IRecipeBuilder<T extends Recipe<?>> {
 
-	void build(Consumer<IFinishedRecipe> consumer);
+	void build(Consumer<FinishedRecipe> consumer);
 
-	void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id);
+	void build(Consumer<FinishedRecipe> consumer, ResourceLocation id);
 
-	IRecipeSerializer<T> getSerializer();
+	RecipeSerializer<T> getSerializer();
 
 }

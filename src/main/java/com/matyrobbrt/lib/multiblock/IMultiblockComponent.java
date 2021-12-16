@@ -27,7 +27,7 @@
 
 package com.matyrobbrt.lib.multiblock;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Classes implmenting this interface represent a part of a multiblock

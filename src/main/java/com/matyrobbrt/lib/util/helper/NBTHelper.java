@@ -27,25 +27,25 @@
 
 package com.matyrobbrt.lib.util.helper;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class NBTHelper {
 	
 	public static BlockPos getBlockPos(ItemStack stack, String key) {
-		CompoundNBT nbt = getTagCompound(stack).getCompound(key);
+		CompoundTag nbt = getTagCompound(stack).getCompound(key);
 		boolean hasData = nbt.getDouble("x") != 0 && nbt.getDouble("y") != 0 && nbt.getDouble("z") != 0;
 		return hasData ? new BlockPos(nbt.getDouble("x"), nbt.getDouble("y"), nbt.getDouble("z")) : null;
 	}
 	
 	public static void setBlockPos(ItemStack stack, String key, BlockPos value) {
-		CompoundNBT nbt = new CompoundNBT();
+		CompoundTag nbt = new CompoundTag();
 		nbt.putDouble("x", value.getX());
 		nbt.putDouble("y", value.getY());
 		nbt.putDouble("z", value.getZ());
@@ -66,7 +66,7 @@ public class NBTHelper {
 
 	public static void createCompound(ItemStack stack) {
 		if (!stack.hasTag()) {
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			stack.setTag(tag);
 		}
 	}
@@ -79,7 +79,7 @@ public class NBTHelper {
 		return stack.hasTag() ? getTagCompound(stack).getString(key) : "";
 	}
 
-	public static CompoundNBT getTagCompound(ItemStack stack) {
+	public static CompoundTag getTagCompound(ItemStack stack) {
 		createCompound(stack);
 		return stack.getTag();
 	}
@@ -112,7 +112,7 @@ public class NBTHelper {
 		return ForgeRegistries.ITEMS.getValue(new ResourceLocation(getString(stack, key)));
 	}
 
-	public static void setItem(ItemStack stack, String key, IItemProvider item) {
+	public static void setItem(ItemStack stack, String key, ItemLike item) {
 		setString(stack, key, item.asItem().getRegistryName().toString());
 	}
 

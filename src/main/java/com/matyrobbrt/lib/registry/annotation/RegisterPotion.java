@@ -34,8 +34,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import net.minecraft.potion.Potion;
-
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)

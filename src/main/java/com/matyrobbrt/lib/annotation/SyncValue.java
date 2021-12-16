@@ -41,12 +41,11 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableList;
 import com.matyrobbrt.lib.util.NBTSerializer;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -67,8 +66,7 @@ public @interface SyncValue {
 		 * {@link #registerSerializer(Class, Function, BiConsumer)}! This is in order to
 		 * not make a mod break the other!
 		 */
-		private static final List<Class<?>> BLACKLISTED_REGISTERING = new ImmutableList.Builder<Class<?>>()
-				.add(FluidTank.class).build();
+		private static final List<Class<?>> BLACKLISTED_REGISTERING = List.of(FluidTank.class);
 
 		static {
 			SERIALIZERS.put(FluidTank.class,
@@ -93,18 +91,18 @@ public @interface SyncValue {
 		 * @param writer
 		 * @return The old serializer, if exists
 		 */
-		public static <T> NBTSerializer<?> registerSerializer(Class<T> clazz, Function<CompoundNBT, T> reader,
-				BiConsumer<CompoundNBT, T> writer) {
+		public static <T> NBTSerializer<?> registerSerializer(Class<T> clazz, Function<CompoundTag, T> reader,
+				BiConsumer<CompoundTag, T> writer) {
 			if (BLACKLISTED_REGISTERING.contains(clazz)) { return null; }
 			return SERIALIZERS.put(clazz, new NBTSerializer<T>() {
 
 				@Override
-				public T read(CompoundNBT nbt) {
+				public T read(CompoundTag nbt) {
 					return reader.apply(nbt);
 				}
 
 				@Override
-				public void write(CompoundNBT nbt, T obj) {
+				public void write(CompoundTag nbt, T obj) {
 					writer.accept(nbt, obj);
 				}
 			});
@@ -118,16 +116,12 @@ public @interface SyncValue {
 		 * @param object The object with SyncValue fields.
 		 * @param nbt    The NBT to read values from.
 		 */
-		public static void readSyncValues(Field[] fields, Object object, CompoundNBT nbt) {
+		public static void readSyncValues(Field[] fields, Object object, CompoundTag nbt) {
 			for (Field field : fields) {
 				for (Annotation annotation : field.getDeclaredAnnotations()) {
-					if (annotation instanceof SyncValue) {
-						SyncValue sync = (SyncValue) annotation;
-
+					if (annotation instanceof SyncValue sync) {
 						try {
-							if (!field.isAccessible()) {
-								field.setAccessible(true);
-							}
+							field.setAccessible(true);
 							String name = sync.name();
 
 							if (field.getType() == int.class) {
@@ -148,7 +142,7 @@ public @interface SyncValue {
 								field.setByte(object, nbt.getByte(name));
 							} else if (SERIALIZERS.containsKey(field.getType())) {
 								NBTSerializer<?> serializer = SERIALIZERS.get(field.getType());
-								CompoundNBT compound = nbt.getCompound(name);
+								CompoundTag compound = nbt.getCompound(name);
 								field.set(object, serializer.read(compound));
 							} else {
 								throw new IllegalArgumentException("Don't know how to read type " + field.getType()
@@ -173,7 +167,7 @@ public @interface SyncValue {
 		 * @return The modified NBT.
 		 */
 		@SuppressWarnings("unchecked") // from serializer
-		public static CompoundNBT writeSyncValues(Field[] fields, Object object, CompoundNBT nbt, SyncType syncType) {
+		public static CompoundTag writeSyncValues(Field[] fields, Object object, CompoundTag nbt, SyncType syncType) {
 
 			for (Field field : fields) {
 				SyncValue syncAnn = field.getAnnotation(SyncValue.class);
@@ -181,9 +175,7 @@ public @interface SyncValue {
 				if (syncType == SyncValue.SyncType.WRITE && syncAnn.onWrite()
 						|| syncType == SyncValue.SyncType.PACKET && syncAnn.onPacket()) {
 					try {
-						if (!field.isAccessible()) {
-							field.setAccessible(true);
-						}
+						field.setAccessible(true);
 						String name = syncAnn.name();
 
 						if (field.getType() == int.class) {
@@ -203,7 +195,7 @@ public @interface SyncValue {
 						} else if (field.getType() == byte.class) {
 							nbt.putByte(name, field.getByte(object));
 						} else if (SERIALIZERS.containsKey(field.getType())) {
-							CompoundNBT compound = new CompoundNBT();
+							CompoundTag compound = new CompoundTag();
 							@SuppressWarnings("rawtypes")
 							NBTSerializer serializer = SERIALIZERS.get(field.getType());
 							serializer.write(compound, field.get(object));
@@ -243,8 +235,8 @@ public @interface SyncValue {
 	String name();
 
 	/**
-	 * Should the variable be saved in {@link TileEntity#getUpdatePacket()} and
-	 * {@link TileEntity#getUpdateTag()}? <br>
+	 * Should the variable be saved in {@link BlockEntity#getUpdatePacket()} and
+	 * {@link BlockEntity#getUpdateTag()}? <br>
 	 * <strong>IMPORTANT: This may clutter the network, so only use it if
 	 * necessary!</strong>
 	 *
@@ -254,7 +246,7 @@ public @interface SyncValue {
 
 	/**
 	 * Should the variable be loaded in
-	 * {@link TileEntity#loadStatic(BlockState, CompoundNBT)}?
+	 * {@link BlockEntity#loadStatic(net.minecraft.core.BlockPos, BlockState, CompoundTag)}?
 	 *
 	 * @return true if we should load on read
 	 */
@@ -263,7 +255,7 @@ public @interface SyncValue {
 	default true;
 
 	/**
-	 * Should the variable be saved in {@link TileEntity#save(CompoundNBT)}?
+	 * Should the variable be saved in {@link BlockEntity#save(CompoundTag)}?
 	 *
 	 * @return true if we should save on write
 	 */

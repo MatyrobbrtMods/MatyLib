@@ -1,8 +1,8 @@
 {
 	"latest_versions": [
 		{
-			"minecraftVersion": "1.16.5",
-			"modVersion": "1.0.4",
+			"minecraftVersion": "1.18.1",
+			"modVersion": "2.0.0",
 			"downloadLink": "https://www.curseforge.com/minecraft/mc-mods/matylib/"
 		}
 	]

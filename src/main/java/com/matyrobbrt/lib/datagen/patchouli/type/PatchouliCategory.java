@@ -33,8 +33,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.matyrobbrt.lib.datagen.patchouli.vars.StringItemStack;
 
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * For information on what all the properties do, please visit the Patchouli
@@ -48,13 +48,13 @@ public class PatchouliCategory {
 	public String name;
 	public String fileName;
 	public String description;
-	public IItemProvider icon;
+	public ItemLike icon;
 
 	public ResourceLocation textureIcon;
 
 	public StringItemStack itemstackIcon;
 
-	public PatchouliCategory(String name, String fileName, String description, @Nullable IItemProvider icon) {
+	public PatchouliCategory(String name, String fileName, String description, @Nullable ItemLike icon) {
 		this.name = name;
 		this.fileName = fileName;
 		this.description = description;

@@ -29,15 +29,15 @@ package com.matyrobbrt.lib.network;
 
 import java.util.function.Supplier;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public interface INetworkMessage {
 
 	void handle(NetworkEvent.Context context);
 
-	void encode(PacketBuffer buffer);
+	void encode(FriendlyByteBuf buffer);
 
 	static <MSG extends INetworkMessage> void handle(MSG message, Supplier<NetworkEvent.Context> ctx) {
 		if (message != null) {

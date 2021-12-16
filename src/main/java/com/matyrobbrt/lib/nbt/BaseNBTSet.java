@@ -32,27 +32,27 @@ import java.util.function.Function;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class BaseNBTSet<O, ONBT extends INBT> extends LinkedHashSet<O> implements INBTSerializable<CompoundNBT> {
+public class BaseNBTSet<O, OTAG extends Tag> extends LinkedHashSet<O> implements INBTSerializable<CompoundTag> {
 
 	private static final long serialVersionUID = 4150343250767590743L;
 
-	private final transient Function<O, ONBT> serializer;
-	private final transient Function<ONBT, O> deserializer;
+	private final transient Function<O, OTAG> serializer;
+	private final transient Function<OTAG, O> deserializer;
 
-	public BaseNBTSet(Function<O, ONBT> serializer, Function<ONBT, O> deserializer) {
+	public BaseNBTSet(Function<O, OTAG> serializer, Function<OTAG, O> deserializer) {
 		super();
 		this.serializer = serializer;
 		this.deserializer = deserializer;
 	}
 
 	@Override
-	public CompoundNBT serializeNBT() {
-		CompoundNBT tag = new CompoundNBT();
+	public CompoundTag serializeNBT() {
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("size", size());
 		for (int i = 0; i < size(); i++) {
 			tag.put(String.valueOf(i), serializer.apply(get(i)));
@@ -66,10 +66,10 @@ public class BaseNBTSet<O, ONBT extends INBT> extends LinkedHashSet<O> implement
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void deserializeNBT(CompoundNBT nbt) {
+	public void deserializeNBT(CompoundTag nbt) {
 		int size = nbt.getInt("size");
 		for (int i = 0; i < size; i++) {
-			O element = deserializer.apply((ONBT) nbt.get(String.valueOf(i)));
+			O element = deserializer.apply((OTAG) nbt.get(String.valueOf(i)));
 			add(element);
 		}
 	}

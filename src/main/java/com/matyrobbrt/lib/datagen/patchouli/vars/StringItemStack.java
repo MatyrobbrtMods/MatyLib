@@ -27,7 +27,7 @@
 
 package com.matyrobbrt.lib.datagen.patchouli.vars;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class StringItemStack {
 	

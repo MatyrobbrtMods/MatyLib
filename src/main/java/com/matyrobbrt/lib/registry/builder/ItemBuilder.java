@@ -27,37 +27,26 @@
 
 package com.matyrobbrt.lib.registry.builder;
 
-import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import com.google.common.collect.Maps;
-
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.item.Item.Properties;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Rarity;
-
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Rarity;
 
 public class ItemBuilder<T extends Item> extends AbstractBuilder<T> {
 
 	private final Function<Item.Properties, T> factory;
 
-	private ItemGroup tab;
+	private CreativeModeTab tab;
 	private int stackSize;
 	private int defaultDurability;
-	private Food food;
+	private FoodProperties food;
 	private Item craftRemainder;
 	private Rarity rarity;
 	private boolean fireResistant;
 	private boolean noRepair = true;
-
-	private Supplier<Callable<ItemStackTileEntityRenderer>> ister;
-	private Map<ToolType, Integer> toolClasses = Maps.newHashMap();
 
 	public ItemBuilder(Function<Properties, T> factory) {
 		this.factory = factory;
@@ -67,7 +56,7 @@ public class ItemBuilder<T extends Item> extends AbstractBuilder<T> {
 		return new ItemBuilder<>(Item::new);
 	}
 
-	public ItemBuilder<T> tab(ItemGroup tab) {
+	public ItemBuilder<T> tab(CreativeModeTab tab) {
 		this.tab = tab;
 		return this;
 	}
@@ -82,7 +71,7 @@ public class ItemBuilder<T extends Item> extends AbstractBuilder<T> {
 		return this;
 	}
 
-	public ItemBuilder<T> food(Food food) {
+	public ItemBuilder<T> food(FoodProperties food) {
 		this.food = food;
 		return this;
 	}
@@ -104,16 +93,6 @@ public class ItemBuilder<T extends Item> extends AbstractBuilder<T> {
 
 	public ItemBuilder<T> setNoRepair() {
 		this.noRepair = false;
-		return this;
-	}
-
-	public ItemBuilder<T> setISTER(Supplier<Callable<ItemStackTileEntityRenderer>> ister) {
-		this.ister = ister;
-		return this;
-	}
-
-	public ItemBuilder<T> addToolType(ToolType type, int level) {
-		toolClasses.put(type, level);
 		return this;
 	}
 
@@ -148,10 +127,6 @@ public class ItemBuilder<T extends Item> extends AbstractBuilder<T> {
 		if (!noRepair) {
 			properties.setNoRepair();
 		}
-		if (ister != null) {
-			properties.setISTER(ister);
-		}
-		toolClasses.forEach(properties::addToolType);
 		return properties;
 	}
 

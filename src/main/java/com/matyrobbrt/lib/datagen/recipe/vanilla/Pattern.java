@@ -27,7 +27,7 @@
 
 package com.matyrobbrt.lib.datagen.recipe.vanilla;
 
-import net.minecraft.data.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 
 /**
  * Class for storing patterns for Vanilla Crafting Recipes

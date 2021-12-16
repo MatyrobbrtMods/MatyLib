@@ -33,8 +33,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.matyrobbrt.lib.datagen.patchouli.page.IPatchouliPage;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * For information on what all the properties do, please visit the Patchouli
@@ -54,14 +54,14 @@ public class PatchouliEntry {
 	
 	public ArrayList<IPatchouliPage> pages = new ArrayList<>();
 
-	public PatchouliEntry(String category, String displayName, IItemProvider icon) {
+	public PatchouliEntry(String category, String displayName, ItemLike icon) {
 		this.category = category;
 		this.fileName = displayName.toLowerCase().replace(' ', '_');
 		this.displayName = displayName;
 		this.icon = icon.asItem();
 	}
 	
-	public PatchouliEntry(PatchouliCategory category, String displayName, IItemProvider icon) {
+	public PatchouliEntry(PatchouliCategory category, String displayName, ItemLike icon) {
 		this.category = category.fileName;
 		this.fileName = displayName.toLowerCase().replace(' ', '_');
 		this.displayName = displayName;

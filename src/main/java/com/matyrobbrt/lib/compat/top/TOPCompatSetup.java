@@ -33,10 +33,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.matyrobbrt.lib.MatyLib;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -65,14 +66,13 @@ class TOPCompatSetup {
 	public static class Driver implements IProbeInfoProvider {
 
 		@Override
-		public String getID() { return MatyLib.INSTANCE.rl("default_driver").toString(); }
+		public ResourceLocation getID() { return MatyLib.INSTANCE.rl("default_driver"); }
 
 		@Override
-		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
+		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 				BlockState blockState, IProbeHitData data) {
 			Block block = blockState.getBlock();
-			if (block instanceof ITOPInfoProvider) {
-				ITOPInfoProvider provider = (ITOPInfoProvider) block;
+			if (block instanceof ITOPInfoProvider provider) {
 				ITOPDriver driver = provider.getTheOneProbeDriver();
 				if (driver != null) {
 					driver.addProbeInfo(mode, probeInfo, player, world, blockState, data);

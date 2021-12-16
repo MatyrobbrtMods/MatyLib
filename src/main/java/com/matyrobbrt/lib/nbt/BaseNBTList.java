@@ -31,34 +31,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
 @SuppressWarnings("unchecked")
-public class BaseNBTList<O, ONBT extends INBT> extends ArrayList<O> implements INBTSerializable<CompoundNBT> {
+public class BaseNBTList<O, OTAG extends Tag> extends ArrayList<O> implements INBTSerializable<CompoundTag> {
 
 	private static final long serialVersionUID = -8221947185139769286L;
 
-	private final transient Function<O, ONBT> serializer;
-	private final transient Function<ONBT, O> deserializer;
+	private final transient Function<O, OTAG> serializer;
+	private final transient Function<OTAG, O> deserializer;
 
-	public BaseNBTList(Function<O, ONBT> serializer, Function<ONBT, O> deserializer) {
+	public BaseNBTList(Function<O, OTAG> serializer, Function<OTAG, O> deserializer) {
 		super();
 		this.serializer = serializer;
 		this.deserializer = deserializer;
 	}
 
-	public BaseNBTList(Function<O, ONBT> serializer, Function<ONBT, O> deserializer, List<O> other) {
+	public BaseNBTList(Function<O, OTAG> serializer, Function<OTAG, O> deserializer, List<O> other) {
 		super(other);
 		this.serializer = serializer;
 		this.deserializer = deserializer;
 	}
 
 	@Override
-	public CompoundNBT serializeNBT() {
-		CompoundNBT tag = new CompoundNBT();
+	public CompoundTag serializeNBT() {
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("size", size());
 		for (int i = 0; i < size(); i++) {
 			tag.put(String.valueOf(i), serializer.apply(get(i)));
@@ -67,10 +67,10 @@ public class BaseNBTList<O, ONBT extends INBT> extends ArrayList<O> implements I
 	}
 
 	@Override
-	public void deserializeNBT(CompoundNBT nbt) {
+	public void deserializeNBT(CompoundTag nbt) {
 		int size = nbt.getInt("size");
 		for (int i = 0; i < size; i++) {
-			O element = deserializer.apply((ONBT) nbt.get(String.valueOf(i)));
+			O element = deserializer.apply((OTAG) nbt.get(String.valueOf(i)));
 			if (i < size()) {
 				set(i, element);
 			} else {

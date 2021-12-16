@@ -41,10 +41,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.matyrobbrt.lib.multiblock.wsd.MultiblockDriverWSD;
 import com.matyrobbrt.lib.nbt.BaseNBTMap;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.world.level.Level;
 
 /**
  * This class should be used in order to store {@link MultiblockHolder}s in a
@@ -54,15 +54,15 @@ import net.minecraft.world.World;
  */
 public class MultiblockDriver<T extends IMultiblock> {
 
-	private final BaseNBTMap<Integer, MultiblockHolder<T>, IntNBT, CompoundNBT> multiblocks;
+	private final BaseNBTMap<Integer, MultiblockHolder<T>, IntTag, CompoundTag> multiblocks;
 	private int lastId = 0;
 
-	private final Function<CompoundNBT, T> deserializer;
-	private final BiConsumer<CompoundNBT, T> serializer;
+	private final Function<CompoundTag, T> deserializer;
+	private final BiConsumer<CompoundTag, T> serializer;
 	private final Consumer<MultiblockDriver<T>> dirtySetter;
 	private final BiPredicate<T, T> mergeChecker;
 	private final IMultiblockConnector<T> connector;
-	private final BiFunction<World, BlockPos, IMultiblockComponent> componenetGetter;
+	private final BiFunction<Level, BlockPos, IMultiblockComponent> componenetGetter;
 
 	private MultiblockDriver(Builder<T> builder) {
 		this.deserializer = builder.deserializer;
@@ -72,12 +72,12 @@ public class MultiblockDriver<T extends IMultiblock> {
 		this.connector = builder.connector;
 		this.componenetGetter = builder.componentGetter;
 
-		multiblocks = new BaseNBTMap<>(IntNBT::valueOf, multiblock -> {
-			CompoundNBT multiblockTag = new CompoundNBT();
+		multiblocks = new BaseNBTMap<>(IntTag::valueOf, multiblock -> {
+			CompoundTag multiblockTag = new CompoundTag();
 			serializer.accept(multiblockTag, multiblock.getMultiblock());
 			multiblock.save(multiblockTag);
 			return multiblockTag;
-		}, IntNBT::getAsInt, tag -> {
+		}, IntTag::getAsInt, tag -> {
 			T value = deserializer.apply(tag);
 			MultiblockHolder<T> holder = new MultiblockHolder<>(value);
 			holder.load(tag);
@@ -92,9 +92,9 @@ public class MultiblockDriver<T extends IMultiblock> {
 
 	public IMultiblockConnector<T> getConnector() { return connector; }
 
-	public BiFunction<World, BlockPos, IMultiblockComponent> getComponentGetter() { return componenetGetter; }
+	public BiFunction<Level, BlockPos, IMultiblockComponent> getComponentGetter() { return componenetGetter; }
 
-	public IMultiblockComponent getComponent(World level, BlockPos pos) {
+	public IMultiblockComponent getComponent(Level level, BlockPos pos) {
 		return componenetGetter.apply(level, pos);
 	}
 
@@ -193,13 +193,13 @@ public class MultiblockDriver<T extends IMultiblock> {
 		return lastId;
 	}
 
-	public void load(CompoundNBT nbt) {
+	public void load(CompoundTag nbt) {
 		clear();
 		multiblocks.deserializeNBT(nbt.getCompound("multiblocks"));
 		lastId = nbt.getInt("lastId");
 	}
 
-	public CompoundNBT save(CompoundNBT nbt) {
+	public CompoundTag save(CompoundTag nbt) {
 		nbt.put("multiblocks", multiblocks.serializeNBT());
 		nbt.putInt("lastId", lastId);
 		return nbt;
@@ -211,19 +211,19 @@ public class MultiblockDriver<T extends IMultiblock> {
 
 	public static class Builder<T extends IMultiblock> {
 
-		private Function<CompoundNBT, T> deserializer;
-		private BiConsumer<CompoundNBT, T> serializer;
+		private Function<CompoundTag, T> deserializer;
+		private BiConsumer<CompoundTag, T> serializer;
 		private Consumer<MultiblockDriver<T>> dirtySetter;
 		private BiPredicate<T, T> mergeChecker;
 		private IMultiblockConnector<T> connector;
-		private BiFunction<World, BlockPos, IMultiblockComponent> componentGetter;
+		private BiFunction<Level, BlockPos, IMultiblockComponent> componentGetter;
 
-		public Builder<T> deserializer(Function<CompoundNBT, T> deserializer) {
+		public Builder<T> deserializer(Function<CompoundTag, T> deserializer) {
 			this.deserializer = deserializer;
 			return this;
 		}
 
-		public Builder<T> serializer(BiConsumer<CompoundNBT, T> serializer) {
+		public Builder<T> serializer(BiConsumer<CompoundTag, T> serializer) {
 			this.serializer = serializer;
 			return this;
 		}
@@ -243,7 +243,7 @@ public class MultiblockDriver<T extends IMultiblock> {
 			return this;
 		}
 
-		public Builder<T> componentGetter(BiFunction<World, BlockPos, IMultiblockComponent> componenetGetter) {
+		public Builder<T> componentGetter(BiFunction<Level, BlockPos, IMultiblockComponent> componenetGetter) {
 			this.componentGetter = componenetGetter;
 			return this;
 		}

@@ -31,20 +31,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Potion;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluid;
 
 /**
  * The maps stored in here contain all the objects (except {@link BlockItem}s)
@@ -63,17 +63,17 @@ public final class MatyLibRegistries {
 	public static final Map<String, List<Block>> BLOCKS = new HashMap<>();
 	public static final Map<String, List<Fluid>> FLUIDS = new HashMap<>();
 
-	public static final Map<String, List<Effect>> EFFECTS = new HashMap<>();
+	public static final Map<String, List<MobEffect>> MOB_EFFECTS = new HashMap<>();
 	public static final Map<String, List<Potion>> POTION_TYPES = new HashMap<>();
 	public static final Map<String, List<SoundEvent>> SOUND_EVENTS = new HashMap<>();
 	public static final Map<String, List<Attribute>> ATTRIBUTES = new HashMap<>();
 
 	public static final Map<String, List<EntityType<?>>> ENTITY_TYPES = new HashMap<>();
-	public static final Map<String, List<TileEntityType<?>>> TILE_ENTITY_TYPES = new HashMap<>();
-	public static final Map<String, List<ContainerType<?>>> CONTAINER_TYPES = new HashMap<>();
+	public static final Map<String, List<BlockEntityType<?>>> BLOCK_ENTITY_TYPES = new HashMap<>();
+	public static final Map<String, List<MenuType<?>>> MENU_TYPES = new HashMap<>();
 	public static final Map<String, List<ParticleType<?>>> PARTICLE_TYPES = new HashMap<>();
 
-	public static final Map<String, List<IRecipeType<?>>> RECIPE_TYPES = new HashMap<>();
-	public static final Map<String, List<IRecipeSerializer<?>>> RECIPE_SERIALIZERS = new HashMap<>();
+	public static final Map<String, List<RecipeType<?>>> RECIPE_TYPES = new HashMap<>();
+	public static final Map<String, List<RecipeSerializer<?>>> RECIPE_SERIALIZERS = new HashMap<>();
 
 }

@@ -37,33 +37,33 @@ import com.matyrobbrt.lib.annotation.SyncValue;
 import com.matyrobbrt.lib.network.matylib.SyncValuesMessage;
 import com.matyrobbrt.lib.network.matylib.SyncValuesMessage.Direction;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class BaseTileEntity extends TileEntity {
+public class BaseTileEntity extends BlockEntity {
 
-	public BaseTileEntity(TileEntityType<?> type) {
-		super(type);
+	public BaseTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT nbt) {
-		super.load(state, nbt);
+	public void load(CompoundTag nbt) {
+		super.load(nbt);
 		SyncValue.Helper.readSyncValues(getSyncFields(), this, nbt);
 	}
-
+	
 	@Override
-	public CompoundNBT save(CompoundNBT tags) {
-		CompoundNBT compoundTag = super.save(tags);
-		SyncValue.Helper.writeSyncValues(getSyncFields(), this, compoundTag, SyncValue.SyncType.WRITE);
-		return compoundTag;
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		SyncValue.Helper.writeSyncValues(getSyncFields(), this, tag, SyncValue.SyncType.WRITE);
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT nbt = super.getUpdateTag();
+	public CompoundTag getUpdateTag() {
+		CompoundTag nbt = super.getUpdateTag();
 		SyncValue.Helper.writeSyncValues(getSyncFields(), this, nbt, SyncValue.SyncType.PACKET);
 		return nbt;
 	}

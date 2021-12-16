@@ -27,9 +27,9 @@
 
 package com.matyrobbrt.lib.compat.top;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import mcjty.theoneprobe.TheOneProbe;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -57,7 +57,7 @@ public interface ITOPDriver {
 	 * @param blockState
 	 * @param probeData
 	 */
-	void addProbeInfo(ProbeMode probeMode, IProbeInfo probeInfo, PlayerEntity player, World level, BlockState blockState,
+	void addProbeInfo(ProbeMode probeMode, IProbeInfo probeInfo, Player player, Level level, BlockState blockState,
 			IProbeHitData probeData);
 
 }

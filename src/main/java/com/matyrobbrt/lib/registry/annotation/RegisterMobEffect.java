@@ -25,33 +25,34 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.event;
+package com.matyrobbrt.lib.registry.annotation;
 
-import java.util.function.Consumer;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import net.minecraft.resources.IPackFinder;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.event.lifecycle.IModBusEvent;
-
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
 /**
- * Fired on PackRepository creation to allow mods to add new pack finders.
+ * Registers the {@link Effect} that is represented by the field that has this
+ * annotation. For the effect to be registered the class in which the field is
+ * has to be annotated with {@link RegistryHolder}
+ *
+ * @author matyrobbrt
+ *
  */
-public class AddPackFindersEvent extends Event implements IModBusEvent {
-
-	private final Consumer<IPackFinder> sources;
-
-	public AddPackFindersEvent(Consumer<IPackFinder> sources) {
-		this.sources = sources;
-	}
+public @interface RegisterMobEffect {
 
 	/**
-	 * Adds a new source to the list of pack finders.
-	 * 
-	 * @param source the pack finder
+	 * The registry name of the effect (the modid is specified by the
+	 * {@link RegistryHolder} on the class the field is in)
+	 *
+	 * @return
 	 */
-	public void addRepositorySource(IPackFinder source) {
-		sources.accept(source);
-	}
+	String value();
 
 }

@@ -30,9 +30,9 @@ package com.matyrobbrt.lib.keybind;
 import java.util.function.Consumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.KeyMapping;
 
-public class BaseKeyBinding extends KeyBinding {
+public class BaseKeyBinding extends KeyMapping {
 
 	public final boolean checkEveryTick;
 

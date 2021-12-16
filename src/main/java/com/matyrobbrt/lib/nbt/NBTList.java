@@ -29,15 +29,15 @@ package com.matyrobbrt.lib.nbt;
 
 import java.util.function.Function;
 
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.Tag;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class NBTList<O extends INBTSerializable<ONBT>, ONBT extends INBT> extends BaseNBTList<O, ONBT> {
+public class NBTList<O extends INBTSerializable<OTAG>, OTAG extends Tag> extends BaseNBTList<O, OTAG> {
 	
 	private static final long serialVersionUID = -1511152237697133478L;
 
-	public NBTList(Function<ONBT, O> deserializer) {
+	public NBTList(Function<OTAG, O> deserializer) {
 		super(O::serializeNBT, deserializer);
 	}
 

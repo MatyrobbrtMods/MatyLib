@@ -10,8 +10,8 @@ import com.matyrobbrt.lib.multiblock.IMultiblockConnector;
 import com.matyrobbrt.lib.multiblock.MultiblockDriver;
 import com.matyrobbrt.lib.multiblock.MultiblockHolder;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 final class TestMultiblock implements IMultiblock {
 
@@ -25,13 +25,13 @@ final class TestMultiblock implements IMultiblock {
 	public static final class Merger implements IMultiblockConnector<TestMultiblock> {
 
 		@Override
-		public void initialize(MultiblockDriver<TestMultiblock> driver, World level, TestMultiblock newMultiblock,
+		public void initialize(MultiblockDriver<TestMultiblock> driver, Level level, TestMultiblock newMultiblock,
 				int id) {
 			driver.createOrUpdate(id, newMultiblock);
 		}
 
 		@Override
-		public void merge(MultiblockDriver<TestMultiblock> driver, World level, TestMultiblock newMultiblock,
+		public void merge(MultiblockDriver<TestMultiblock> driver, Level level, TestMultiblock newMultiblock,
 				TestMultiblock otherMultiblock) {
 			Pair<Integer, MultiblockHolder<TestMultiblock>> otherHolder = driver
 					.getHolderForMultiblock(otherMultiblock);
@@ -42,7 +42,7 @@ final class TestMultiblock implements IMultiblock {
 		}
 
 		@Override
-		public void distribute(MultiblockDriver<TestMultiblock> driver, World level, TestMultiblock original,
+		public void distribute(MultiblockDriver<TestMultiblock> driver, Level level, TestMultiblock original,
 				List<Pair<Integer, Set<BlockPos>>> todo) {
 		}
 

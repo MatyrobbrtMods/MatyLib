@@ -27,23 +27,18 @@
 
 package com.matyrobbrt.lib.util.extender;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import net.minecraft.resources.ResourcePackType;
-
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-
 public class CustomPackTypes {
 
-	public static final Method CREATE_METHOD = ObfuscationReflectionHelper.findMethod(ResourcePackType.class, "create",
-			String.class, String.class);
-
-	public static ResourcePackType create(String name, String directory) {
-		try {
-			return (ResourcePackType) CREATE_METHOD.invoke(null, name, directory);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
-		return null;
-	}
+	/*
+	 * public static final Method CREATE_METHOD =
+	 * ObfuscationReflectionHelper.findMethod(PackType.class, "create",
+	 * String.class, String.class, com.mojang.bridge.game.PackType.class);
+	 * 
+	 * public static PackType create(String name, String directory,
+	 * com.mojang.bridge.game.PackType packType) { try { return (PackType)
+	 * CREATE_METHOD.invoke(null, name, directory, packType); } catch
+	 * (IllegalAccessException | IllegalArgumentException |
+	 * InvocationTargetException e) {} return null; }
+	 */
 
 }

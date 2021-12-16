@@ -29,10 +29,10 @@ package com.matyrobbrt.lib.nbt;
 
 import java.util.function.Function;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
-public class ArraySerializer<T, TNBT extends INBT> {
+public class ArraySerializer<T, TNBT extends Tag> {
 
 	private final Function<T, TNBT> serializer;
 	private final Function<TNBT, T> deserializer;
@@ -43,15 +43,15 @@ public class ArraySerializer<T, TNBT extends INBT> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void deserializeNBT(T[] outputArray, CompoundNBT nbt) {
+	public void deserializeNBT(T[] outputArray, CompoundTag nbt) {
 		int size = nbt.getInt("size");
 		for (int i = 0; i < size; i++) {
 			outputArray[i] = deserializer.apply((TNBT) nbt.get(String.valueOf(i)));
 		}
 	}
 
-	public CompoundNBT serializeNBT(T[] inputArray) {
-		CompoundNBT nbt = new CompoundNBT();
+	public CompoundTag serializeNBT(T[] inputArray) {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putInt("size", inputArray.length);
 		for (int i = 0; i < inputArray.length; i++) {
 			nbt.put(String.valueOf(i), serializer.apply(inputArray[i]));

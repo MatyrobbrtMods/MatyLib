@@ -25,27 +25,35 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.mixin;
+package com.matyrobbrt.lib.registry.annotation;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.matyrobbrt.lib.event.AddPackFindersEvent;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import net.minecraft.resources.IPackFinder;
-import net.minecraft.resources.ResourcePackList;
+@Documented
+@Retention(RUNTIME)
+@Target({
+		FIELD
+})
+/**
+ * Registers the {@link ContainerType} that is represented by the field that has
+ * this annotation. For the ContainerType to be registered the class in which
+ * the field is has to be annotated with {@link RegistryHolder}
+ *
+ * @author matyrobbrt
+ *
+ */
+public @interface RegisterMenuType {
 
-import net.minecraftforge.fml.ModLoader;
-
-@Mixin(ResourcePackList.class)
-public abstract class ResourcePackListMixin {
-
-	@Inject(at = @At("TAIL"), method = "Lnet/minecraft/resources/ResourcePackList;<init>([Lnet/minecraft/resources/IPackFinder;)V")
-	private void matylib$packFindersEvent(IPackFinder[] finders, CallbackInfo ci) {
-		ModLoader.get()
-				.postEvent(new AddPackFindersEvent(((ResourcePackList) (Object) this)::addPackFinder));
-	}
-
+	/**
+	 * The registry name of the ContainerType (the modid is specified by the
+	 * {@link RegistryHolder} on the class the field is in)
+	 *
+	 * @return
+	 */
+	String value();
 }

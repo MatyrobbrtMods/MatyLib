@@ -29,21 +29,21 @@ package com.matyrobbrt.lib.multiblock;
 
 import com.matyrobbrt.lib.nbt.BaseNBTSet;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.LongNBT;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.LongTag;
 
 public class MultiblockHolder<M extends IMultiblock> {
 
 	private final M multiblock;
-	private final BaseNBTSet<BlockPos, LongNBT> positions = new BaseNBTSet<>(pos -> LongNBT.valueOf(pos.asLong()),
+	private final BaseNBTSet<BlockPos, LongTag> positions = new BaseNBTSet<>(pos -> LongTag.valueOf(pos.asLong()),
 			nbt -> BlockPos.of(nbt.getAsLong()));
 
 	public MultiblockHolder(final M multiblock) {
 		this.multiblock = multiblock;
 	}
 
-	public BaseNBTSet<BlockPos, LongNBT> getPositions() { return positions; }
+	public BaseNBTSet<BlockPos, LongTag> getPositions() { return positions; }
 
 	public void removeBlockPos(final BlockPos toRemove) {
 		positions.remove(toRemove);
@@ -59,11 +59,11 @@ public class MultiblockHolder<M extends IMultiblock> {
 
 	public M getMultiblock() { return multiblock; }
 
-	public void save(CompoundNBT nbt) {
+	public void save(CompoundTag nbt) {
 		nbt.put("positions", positions.serializeNBT());
 	}
 
-	public void load(CompoundNBT nbt) {
+	public void load(CompoundTag nbt) {
 		positions.deserializeNBT(nbt.getCompound("positions"));
 	}
 

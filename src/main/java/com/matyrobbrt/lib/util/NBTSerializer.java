@@ -30,24 +30,24 @@ package com.matyrobbrt.lib.util;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public interface NBTSerializer<T> {
 
-	T read(CompoundNBT tags);
+	T read(CompoundTag tags);
 
-	void write(CompoundNBT tags, T obj);
+	void write(CompoundTag tags, T obj);
 
-	static <T> NBTSerializer<T> create(Function<CompoundNBT, T> reader, BiConsumer<CompoundNBT, T> writer) {
+	static <T> NBTSerializer<T> create(Function<CompoundTag, T> reader, BiConsumer<CompoundTag, T> writer) {
 		return new NBTSerializer<T>() {
 
 			@Override
-			public T read(CompoundNBT tags) {
+			public T read(CompoundTag tags) {
 				return reader.apply(tags);
 			}
 
 			@Override
-			public void write(CompoundNBT tags, T obj) {
+			public void write(CompoundTag tags, T obj) {
 				writer.accept(tags, obj);
 			}
 		};

@@ -33,7 +33,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import com.matyrobbrt.lib.MatyLib;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -44,11 +44,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @ThreadSafe
 @Mod.EventBusSubscriber(modid = MatyLib.MOD_ID, bus = Bus.MOD)
-public final class WorldTickScheduler extends Scheduler<World> {
+public final class WorldTickScheduler extends Scheduler<Level> {
 
 	private void serverTicks(final TickEvent.WorldTickEvent event) {
 		if (event.phase == Phase.START) {
-			Consumer<World> action = scheduledActions.poll();
+			Consumer<Level> action = scheduledActions.poll();
 			do {
 				if (action != null) {
 					action.accept(event.world);
@@ -58,7 +58,7 @@ public final class WorldTickScheduler extends Scheduler<World> {
 		}
 	}
 
-	public static void scheduleAction(Consumer<World> action) {
+	public static void scheduleAction(Consumer<Level> action) {
 		INSTANCE.scheduledActions.add(action);
 
 		if (INSTANCE.scheduledActions.size() > QUEUE_OVERFLOW_LIMIT) {
