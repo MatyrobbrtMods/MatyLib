@@ -36,7 +36,7 @@ mixin {
     debug.export = true
 }
 
-version = "${version}"
+version = "2." + "${version}"
 group = 'com.matyrobbrt.lib'
 archivesBaseName = "${mod_id}-${mc_version}"
 
@@ -192,7 +192,7 @@ task makeChangelog(type: GitChangelogTask) {
 	fromRepo = file("$projectDir")
 	file = file('changelog.html')
 	untaggedName = "Current release ${version}"
-	fromCommit = '531341b837b9f7750995704c6ddf8cfc2d756f2f'
+	fromCommit = "${changelog_commit}"
 	toRef = "${mc_version}"
 	templateContent = file('changelog.mustache').getText('UTF-8')
 }
@@ -264,7 +264,7 @@ jar {
             "Specification-Vendor": "matyrobbrt",
             "Specification-Version": "1",
             "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
+            "Implementation-Version": version,
             "Implementation-Vendor" :"matyrobbrt",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
             "MixinConfigs": "matylib.mixins.json"
@@ -278,13 +278,13 @@ jar.dependsOn(replaceResources)
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
-    destinationDirectory = file("$rootDir/build-out/${mc_version}/${version}/")
+    destinationDirectory = file("$rootDir/build-out/${mc_version}/" + version + "/")
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-    destinationDirectory = file("$rootDir/build-out/${mc_version}/${version}/")
+    destinationDirectory = file("$rootDir/build-out/${mc_version}/" + version + "/")
 }
 
 artifacts {
