@@ -262,7 +262,7 @@ jar {
             "MixinConfigs": "matylib.mixins.json"
         ])
     }
-    destinationDirectory = file("$rootDir/build-out/${mc_version}/${version}/")
+    destinationDirectory = file("../build-out/${mc_version}/${version}/")
 }
 
 jar.dependsOn(replaceResources)
@@ -270,13 +270,13 @@ jar.dependsOn(replaceResources)
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
-    destinationDirectory = file("$rootDir/build-out/${mc_version}/${version}/")
+    destinationDirectory = file("../build-out/${mc_version}/${version}/")
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-    destinationDirectory = file("$rootDir/build-out/${mc_version}/${version}/")
+    destinationDirectory = file("../build-out/${mc_version}/${version}/")
 }
 
 artifacts {
