@@ -1,27 +1,20 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
+# Dependencies
+/node_modules
 
-# idea
-out
-*.ipr
-*.iws
-*.iml
-.idea
+# Production
+/build
 
-# gradle
-build
-.gradle
+# Generated files
+.docusaurus
+.cache-loader
 
-# other
-eclipse
-run
-build-out
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Files from Forge MDK
-forge*changelog.txt
-/.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
