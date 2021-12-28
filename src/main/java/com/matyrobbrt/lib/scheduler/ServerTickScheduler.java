@@ -41,7 +41,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 
 @ThreadSafe
 @Mod.EventBusSubscriber(modid = MatyLib.MOD_ID, bus = Bus.MOD)

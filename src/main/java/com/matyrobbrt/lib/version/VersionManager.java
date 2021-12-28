@@ -76,7 +76,7 @@ public class VersionManager {
 	@SubscribeEvent
 	public static void onPreInit(final FMLConstructModEvent event) {
 		MOD_VERSIONS.put(MatyLib.MOD_ID,
-				processVersion("https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.18.1/versions.json"));
+				processVersion("https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.17.1/versions.json"));
 	}
 
 	private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation()

@@ -30,13 +30,13 @@ package com.matyrobbrt.lib.dev_tests;
 import com.matyrobbrt.lib.MatyLib;
 import com.matyrobbrt.lib.annotation.SyncValue;
 import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
+import com.matyrobbrt.lib.tile_entity.BaseBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 
-class TestTileEntity extends BaseTileEntity implements IMultiblockComponent {
+class TestTileEntity extends BaseBlockEntity implements IMultiblockComponent {
 
 	public TestTileEntity(BlockPos pos, BlockState state) {
 		super(TestModule.TE_TYPE, pos, state);

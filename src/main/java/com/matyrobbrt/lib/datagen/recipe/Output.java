@@ -30,8 +30,8 @@ package com.matyrobbrt.lib.datagen.recipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 /**
  * Class for defining outputs of recipes

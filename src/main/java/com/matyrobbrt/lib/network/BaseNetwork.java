@@ -38,9 +38,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 /**
  * A base class for networks

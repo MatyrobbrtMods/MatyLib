@@ -30,7 +30,7 @@ package com.matyrobbrt.lib.network.matylib;
 import com.matyrobbrt.lib.annotation.SyncValue;
 import com.matyrobbrt.lib.network.BaseNetwork;
 import com.matyrobbrt.lib.network.INetworkMessage;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
+import com.matyrobbrt.lib.tile_entity.BaseBlockEntity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -42,7 +42,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 public class SyncValuesMessage implements INetworkMessage {
 
@@ -54,7 +54,7 @@ public class SyncValuesMessage implements INetworkMessage {
 	public final CompoundTag nbt;
 	public final Direction direction;
 
-	public SyncValuesMessage(BlockPos pos, BaseTileEntity te, Direction direction) {
+	public SyncValuesMessage(BlockPos pos, BaseBlockEntity te, Direction direction) {
 		this.pos = pos;
 		this.nbt = SyncValue.Helper.writeSyncValues(te.getSyncFields(), te, te.save(new CompoundTag()),
 				SyncValue.SyncType.PACKET);
@@ -108,7 +108,7 @@ public class SyncValuesMessage implements INetworkMessage {
 		return new SyncValuesMessage(buffer.readBlockPos(), buffer.readNbt(), buffer.readEnum(Direction.class));
 	}
 
-	public static void send(BaseTileEntity tile, Direction direction) {
+	public static void send(BaseBlockEntity tile, Direction direction) {
 		if (direction == Direction.SERVER_TO_CLIENT) {
 			BaseNetwork.sendToAllTracking(MatyLibNetwork.CHANNEL,
 					new SyncValuesMessage(tile.getBlockPos(), tile, direction), tile);

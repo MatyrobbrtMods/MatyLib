@@ -76,10 +76,10 @@ sourceSets {
 	}
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.18.1'
+    mappings channel: 'official', version: '1.17.1'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -247,8 +247,8 @@ dependencies {
     }
     */
     
-    // TOP 1.18 doesn't work on maven yet
-    implementation fg.deobf("curse.maven:theoneprobe-245211:3550084")
+    // TOP 1.17 doesn't work on maven yet
+    implementation fg.deobf("curse.maven:theoneprobe-245211:3430022")
     
     implementation fg.deobf(project.dependencies.create("top.theillusivec4.curios:curios-forge:${curios_version}") {
     	transitive = false
@@ -270,7 +270,7 @@ jar {
             "MixinConfigs": "matylib.mixins.json"
         ])
     }
-    destinationDirectory = file("$rootDir/build-out/${mc_version}/${version}/")
+    destinationDirectory = file("../build-out/${mc_version}/${version}/")
 }
 
 jar.dependsOn(replaceResources)
@@ -278,13 +278,13 @@ jar.dependsOn(replaceResources)
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
-    destinationDirectory = file("$rootDir/build-out/${mc_version}/" + version + "/")
+    destinationDirectory = file("../build-out/${mc_version}/" + version + "/")
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-    destinationDirectory = file("$rootDir/build-out/${mc_version}/" + version + "/")
+    destinationDirectory = file("../build-out/${mc_version}/" + version + "/")
 }
 
 artifacts {

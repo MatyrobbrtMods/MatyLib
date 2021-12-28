@@ -43,9 +43,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class BaseTileEntity extends BlockEntity {
+public class BaseBlockEntity extends BlockEntity {
 
-	public BaseTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+	public BaseBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
 
@@ -54,11 +54,12 @@ public class BaseTileEntity extends BlockEntity {
 		super.load(nbt);
 		SyncValue.Helper.readSyncValues(getSyncFields(), this, nbt);
 	}
-	
+
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		SyncValue.Helper.writeSyncValues(getSyncFields(), this, tag, SyncValue.SyncType.WRITE);
+	public CompoundTag save(CompoundTag $tag) {
+		CompoundTag nbt = super.save($tag);
+		SyncValue.Helper.writeSyncValues(getSyncFields(), this, nbt, SyncValue.SyncType.WRITE);
+		return nbt;
 	}
 
 	@Override

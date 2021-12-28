@@ -30,8 +30,8 @@ package com.matyrobbrt.lib.network.matylib;
 import com.matyrobbrt.lib.MatyLib;
 import com.matyrobbrt.lib.network.BaseNetwork;
 
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 public class MatyLibNetwork extends BaseNetwork {
 

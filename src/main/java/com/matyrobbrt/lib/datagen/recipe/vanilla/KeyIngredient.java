@@ -31,7 +31,7 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 /**
  * Class for storing key ingredients for Vanilla Crafting Recipes
