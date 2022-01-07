@@ -32,6 +32,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 
 /**
  * The base interface for modules. Any class inheriting this interface
@@ -65,10 +67,20 @@ public interface IModule {
 	default void register(final IEventBus modBus, final IEventBus forgeBus) {
 		modBus.addListener(this::onCommonSetup);
 		modBus.addListener(this::onClientSetup);
+		modBus.addListener(this::sendIMC);
+		modBus.addListener(this::processIMC);
 	}
 	
 	default void initConfig(final Type configType, final ForgeConfigSpec.Builder builder) {
 		
+	}
+
+	default void sendIMC(final InterModEnqueueEvent event) {
+
+	}
+
+	default void processIMC(final InterModProcessEvent event) {
+
 	}
 
 }

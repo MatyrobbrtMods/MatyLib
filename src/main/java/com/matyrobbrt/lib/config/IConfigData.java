@@ -25,44 +25,30 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.dev_tests;
+package com.matyrobbrt.lib.config;
 
-import com.matyrobbrt.lib.MatyLib;
-import com.matyrobbrt.lib.annotation.SyncValue;
-import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
+public interface IConfigData {
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
-
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
-
-	public TestTileEntity() {
-		super(TestModule.TE_TYPE);
+	default void validate() throws ValidationException {
+		// This should be overwritten, if you want to do something
 	}
 
-	@SyncValue(name = "whateverSync", onPacket = true)
-	private int whatever;
+	class ValidationException extends Exception {
 
-	@Override
-	public void tick() {
-		if (level.isClientSide()) {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		} else {
-			System.out.println(TestConfig.INSTANCE.get().test);
+		private static final long serialVersionUID = 2147020511035593744L;
+
+		public ValidationException(String message) {
+			super(message);
 		}
+
+		public ValidationException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		public ValidationException(Throwable cause) {
+			super(cause);
+		}
+
 	}
 
-	@Override
-	public ResourceLocation getId() { return new ResourceLocation(MatyLib.MOD_ID, "test"); }
-
-	@Override
-	public int getMultiblockId() {
-		Integer inT = TestWSD.getInstance(level).getDriver().getIDForPos(worldPosition);
-		return inT != null ? inT : -1;
-	}
-
-	@Override
-	public void setMultiblockId(int id) {
-	}
 }

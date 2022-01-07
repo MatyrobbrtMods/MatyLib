@@ -28,6 +28,7 @@
 package com.matyrobbrt.lib.network.matylib;
 
 import com.matyrobbrt.lib.MatyLib;
+import com.matyrobbrt.lib.config.network.S2CSyncServerConfigMessage;
 import com.matyrobbrt.lib.network.BaseNetwork;
 
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -37,11 +38,14 @@ public class MatyLibNetwork extends BaseNetwork {
 
 	public static final String NETWORK_VERSION = "0.1.0";
 
-	public static final SimpleChannel CHANNEL = newSimpleChannel("channel");
+	public static final SimpleChannel MAIN_CHANNEL = newSimpleChannel("main");
+	public static final SimpleChannel CONFIG_CHANNEL = newSimpleChannel("config");
 
 	public static void init() {
-		registerServerToClient(CHANNEL, SyncValuesMessage.class, SyncValuesMessage::decode);
-		registerClientToServer(CHANNEL, SyncValuesMessage.class, SyncValuesMessage::decode);
+		registerServerToClient(MAIN_CHANNEL, SyncValuesMessage.class, SyncValuesMessage::decode);
+		registerClientToServer(MAIN_CHANNEL, SyncValuesMessage.class, SyncValuesMessage::decode);
+
+		registerServerToClient(CONFIG_CHANNEL, S2CSyncServerConfigMessage.class, S2CSyncServerConfigMessage::decode);
 	}
 
 	private static SimpleChannel newSimpleChannel(String name) {

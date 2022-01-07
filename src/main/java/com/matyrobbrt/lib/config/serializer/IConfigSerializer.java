@@ -25,44 +25,40 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.dev_tests;
+package com.matyrobbrt.lib.config.serializer;
 
-import com.matyrobbrt.lib.MatyLib;
-import com.matyrobbrt.lib.annotation.SyncValue;
-import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
+import java.io.ByteArrayInputStream;
+import java.nio.file.Path;
+import java.util.function.Supplier;
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
+import com.matyrobbrt.lib.config.IConfigData;
+import com.matyrobbrt.lib.config.annotation.Config;
 
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
+public interface IConfigSerializer<C extends IConfigData> {
 
-	public TestTileEntity() {
-		super(TestModule.TE_TYPE);
+	void serialize(C config) throws SerializationException;
+
+	C deserialize() throws SerializationException;
+
+	C deserialize(ByteArrayInputStream stream) throws SerializationException;
+
+	C createDefault();
+
+	Supplier<Path> getConfigPath();
+
+	@FunctionalInterface
+	interface Factory<T extends IConfigData> {
+
+		IConfigSerializer<T> create(Config configDefinition, Class<T> configClass);
 	}
 
-	@SyncValue(name = "whateverSync", onPacket = true)
-	private int whatever;
+	class SerializationException extends Exception {
 
-	@Override
-	public void tick() {
-		if (level.isClientSide()) {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		} else {
-			System.out.println(TestConfig.INSTANCE.get().test);
+		private static final long serialVersionUID = 3221732273308624248L;
+
+		public SerializationException(Throwable cause) {
+			super(cause);
 		}
 	}
 
-	@Override
-	public ResourceLocation getId() { return new ResourceLocation(MatyLib.MOD_ID, "test"); }
-
-	@Override
-	public int getMultiblockId() {
-		Integer inT = TestWSD.getInstance(level).getDriver().getIDForPos(worldPosition);
-		return inT != null ? inT : -1;
-	}
-
-	@Override
-	public void setMultiblockId(int id) {
-	}
 }

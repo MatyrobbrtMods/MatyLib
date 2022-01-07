@@ -27,6 +27,7 @@
 
 package com.matyrobbrt.lib.util;
 
+import java.lang.reflect.Constructor;
 import java.util.Optional;
 
 public class Utils {
@@ -44,6 +45,16 @@ public class Utils {
 	public static <T> Optional<T> instanceOf(Object object, Class<T> clazz) {
 		if (clazz.isInstance(object)) { return Optional.of(clazz.cast(object)); }
 		return Optional.ofNullable(null);
+	}
+
+	public static <C> C constructUnsafely(Class<C> clazz) {
+		try {
+			Constructor<C> constructor = clazz.getDeclaredConstructor();
+			constructor.setAccessible(true);
+			return constructor.newInstance();
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

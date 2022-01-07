@@ -27,42 +27,26 @@
 
 package com.matyrobbrt.lib.dev_tests;
 
-import com.matyrobbrt.lib.MatyLib;
-import com.matyrobbrt.lib.annotation.SyncValue;
-import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
+import com.matyrobbrt.lib.config.ConfigManager;
+import com.matyrobbrt.lib.config.IConfigData;
+import com.matyrobbrt.lib.config.IConfigHolder;
+import com.matyrobbrt.lib.config.annotation.Config;
+import com.matyrobbrt.lib.config.annotation.ConfigEntry;
+import com.matyrobbrt.lib.config.serializer.TOMLSerializer;
 
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ResourceLocation;
 
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
+@Config(name = "test")
+public class TestConfig implements IConfigData {
 
-	public TestTileEntity() {
-		super(TestModule.TE_TYPE);
+	public static void hello() {
+
 	}
 
-	@SyncValue(name = "whateverSync", onPacket = true)
-	private int whatever;
+	public static final IConfigHolder<TestConfig> INSTANCE = ConfigManager.register(TestConfig.class,
+			new ResourceLocation("ok"), TOMLSerializer::new);
 
-	@Override
-	public void tick() {
-		if (level.isClientSide()) {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		} else {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		}
-	}
+	@ConfigEntry(name = "test")
+	public int test = 4;
 
-	@Override
-	public ResourceLocation getId() { return new ResourceLocation(MatyLib.MOD_ID, "test"); }
-
-	@Override
-	public int getMultiblockId() {
-		Integer inT = TestWSD.getInstance(level).getDriver().getIDForPos(worldPosition);
-		return inT != null ? inT : -1;
-	}
-
-	@Override
-	public void setMultiblockId(int id) {
-	}
 }

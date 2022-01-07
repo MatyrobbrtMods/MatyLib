@@ -110,10 +110,10 @@ public class SyncValuesMessage implements INetworkMessage {
 
 	public static void send(BaseTileEntity tile, Direction direction) {
 		if (direction == Direction.SERVER_TO_CLIENT) {
-			BaseNetwork.sendToAllTracking(MatyLibNetwork.CHANNEL,
+			BaseNetwork.sendToAllTracking(MatyLibNetwork.MAIN_CHANNEL,
 					new SyncValuesMessage(tile.getBlockPos(), tile, direction), tile);
 		} else {
-			MatyLibNetwork.CHANNEL.sendToServer(new SyncValuesMessage(tile.getBlockPos(), tile, direction));
+			MatyLibNetwork.MAIN_CHANNEL.sendToServer(new SyncValuesMessage(tile.getBlockPos(), tile, direction));
 		}
 	}
 

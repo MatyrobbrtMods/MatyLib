@@ -52,13 +52,13 @@ public class WrenchItem extends Item {
 	@Override
 	public ActionResultType useOn(ItemUseContext pContext) {
 		if (pContext.getLevel().isClientSide()) { return super.useOn(pContext); }
+		// TODO update it in 1.18 as well!
 		BlockState clickedState = pContext.getLevel().getBlockState(pContext.getClickedPos());
 		for (IWrenchBehaviour behaviour : WrenchIMC.getBehaviours()) {
-			WrenchResult result = behaviour.executeAction(pContext.getItemInHand(), WrenchMode.DISMANTALE,
+			WrenchResult result = behaviour.executeAction(pContext.getItemInHand(),
+					pContext.getPlayer().isShiftKeyDown() ? WrenchMode.DISMANTALE : WrenchMode.CONFIGURE,
 					pContext.getPlayer(), clickedState, pContext.getClickedPos(), pContext.getLevel());
-			if (result == WrenchResult.CONSUME) {
-				return ActionResultType.CONSUME;
-			}
+			if (result == WrenchResult.CONSUME) { return ActionResultType.CONSUME; }
 		}
 		return super.useOn(pContext);
 	}

@@ -25,44 +25,33 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.dev_tests;
+package com.matyrobbrt.lib.config.annotation;
 
-import com.matyrobbrt.lib.MatyLib;
-import com.matyrobbrt.lib.annotation.SyncValue;
-import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
+import net.minecraftforge.fml.config.ModConfig;
 
-	public TestTileEntity() {
-		super(TestModule.TE_TYPE);
-	}
+@Documented
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Config {
 
-	@SyncValue(name = "whateverSync", onPacket = true)
-	private int whatever;
+	/**
+	 * @return The name of the file, <b> WITHOUT THE EXTENSION </b>
+	 */
+	String name();
 
-	@Override
-	public void tick() {
-		if (level.isClientSide()) {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		} else {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		}
-	}
+	String folder() default "";
 
-	@Override
-	public ResourceLocation getId() { return new ResourceLocation(MatyLib.MOD_ID, "test"); }
+	/**
+	 * The config type of the config. At the moment, only
+	 * {@link ModConfig.Type#COMMON} and {@link ModConfig.Type#CLIENT} properly work
+	 */
+	ModConfig.Type configType() default ModConfig.Type.COMMON;
 
-	@Override
-	public int getMultiblockId() {
-		Integer inT = TestWSD.getInstance(level).getDriver().getIDForPos(worldPosition);
-		return inT != null ? inT : -1;
-	}
-
-	@Override
-	public void setMultiblockId(int id) {
-	}
 }

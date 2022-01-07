@@ -25,44 +25,8 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.dev_tests;
-
-import com.matyrobbrt.lib.MatyLib;
-import com.matyrobbrt.lib.annotation.SyncValue;
-import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
-
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
-
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
-
-	public TestTileEntity() {
-		super(TestModule.TE_TYPE);
-	}
-
-	@SyncValue(name = "whateverSync", onPacket = true)
-	private int whatever;
-
-	@Override
-	public void tick() {
-		if (level.isClientSide()) {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		} else {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		}
-	}
-
-	@Override
-	public ResourceLocation getId() { return new ResourceLocation(MatyLib.MOD_ID, "test"); }
-
-	@Override
-	public int getMultiblockId() {
-		Integer inT = TestWSD.getInstance(level).getDriver().getIDForPos(worldPosition);
-		return inT != null ? inT : -1;
-	}
-
-	@Override
-	public void setMultiblockId(int id) {
-	}
-}
+/**
+ * @author matyrobbrt
+ *
+ */
+package com.matyrobbrt.lib.config.annotation;

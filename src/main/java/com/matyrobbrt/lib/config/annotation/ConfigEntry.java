@@ -25,44 +25,26 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.dev_tests;
+package com.matyrobbrt.lib.config.annotation;
 
-import com.matyrobbrt.lib.MatyLib;
-import com.matyrobbrt.lib.annotation.SyncValue;
-import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
+public @interface ConfigEntry {
 
-	public TestTileEntity() {
-		super(TestModule.TE_TYPE);
-	}
+	String name();
 
-	@SyncValue(name = "whateverSync", onPacket = true)
-	private int whatever;
+	String category() default "";
 
-	@Override
-	public void tick() {
-		if (level.isClientSide()) {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		} else {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		}
-	}
+	String[] comments() default {};
 
-	@Override
-	public ResourceLocation getId() { return new ResourceLocation(MatyLib.MOD_ID, "test"); }
+	boolean commentDefaultValue() default true;
 
-	@Override
-	public int getMultiblockId() {
-		Integer inT = TestWSD.getInstance(level).getDriver().getIDForPos(worldPosition);
-		return inT != null ? inT : -1;
-	}
-
-	@Override
-	public void setMultiblockId(int id) {
-	}
 }

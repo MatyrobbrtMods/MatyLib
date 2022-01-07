@@ -25,44 +25,45 @@
  * SOFTWARE.
  */
 
-package com.matyrobbrt.lib.dev_tests;
+package com.matyrobbrt.lib.config;
 
-import com.matyrobbrt.lib.MatyLib;
-import com.matyrobbrt.lib.annotation.SyncValue;
-import com.matyrobbrt.lib.multiblock.IMultiblockComponent;
-import com.matyrobbrt.lib.tile_entity.BaseTileEntity;
+import java.io.File;
+import java.util.function.Supplier;
 
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
+import javax.annotation.Nonnull;
 
-class TestTileEntity extends BaseTileEntity implements ITickableTileEntity, IMultiblockComponent {
+import org.apache.logging.log4j.Logger;
 
-	public TestTileEntity() {
-		super(TestModule.TE_TYPE);
-	}
+public interface IConfigHolder<C extends IConfigData> extends Supplier<C> {
 
-	@SyncValue(name = "whateverSync", onPacket = true)
-	private int whatever;
+	@Nonnull
+	Class<C> getConfigClass();
 
-	@Override
-	public void tick() {
-		if (level.isClientSide()) {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		} else {
-			System.out.println(TestConfig.INSTANCE.get().test);
-		}
-	}
+	void save();
+
+	boolean load();
+
+	C getConfig();
+
+	File getConfigFile();
+
+	Logger getLogger();
 
 	@Override
-	public ResourceLocation getId() { return new ResourceLocation(MatyLib.MOD_ID, "test"); }
-
-	@Override
-	public int getMultiblockId() {
-		Integer inT = TestWSD.getInstance(level).getDriver().getIDForPos(worldPosition);
-		return inT != null ? inT : -1;
+	default C get() {
+		return getConfig();
 	}
 
-	@Override
-	public void setMultiblockId(int id) {
-	}
+	/**
+	 * Resets the config held by this holder to its default values. <br>
+	 * Does not save the reset config to file, for that use {@link #save()}.
+	 */
+	void resetToDefault();
+
+	/**
+	 * Sets the config held by this holder. <br>
+	 * Does not save the set config to file, for that use {@link #save()}.
+	 */
+	void setConfig(C config);
+
 }
