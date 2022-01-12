@@ -36,9 +36,6 @@ import java.lang.annotation.Target;
 
 import com.matyrobbrt.lib.registry.annotation.RegistryHolder;
 
-@Documented
-@Retention(RUNTIME)
-@Target(FIELD)
 /**
  * Registers the {@link RegisterRecipeSerializer} that is represented by the
  * field that has this annotation. For the recipe serializer to be registered
@@ -48,6 +45,9 @@ import com.matyrobbrt.lib.registry.annotation.RegistryHolder;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
 public @interface RegisterRecipeSerializer {
 
 	/**

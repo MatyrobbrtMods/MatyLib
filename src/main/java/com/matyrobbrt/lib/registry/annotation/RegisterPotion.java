@@ -36,9 +36,6 @@ import java.lang.annotation.Target;
 
 import net.minecraft.potion.Potion;
 
-@Documented
-@Retention(RUNTIME)
-@Target(FIELD)
 /**
  * Registers the {@link Potion} that is represented by the field that has this
  * annotation. For the potion to be registered the class in which the field is
@@ -47,6 +44,9 @@ import net.minecraft.potion.Potion;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
 public @interface RegisterPotion {
 
 	/**

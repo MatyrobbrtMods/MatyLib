@@ -36,11 +36,6 @@ import java.lang.annotation.Target;
 
 import net.minecraft.entity.EntityType;
 
-@Documented
-@Retention(RUNTIME)
-@Target({
-		FIELD
-})
 /**
  * Registers the {@link EntityType} that is represented by the field that has
  * this annotation. For the EntityType to be registered the class in which the
@@ -49,6 +44,11 @@ import net.minecraft.entity.EntityType;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target({
+		FIELD
+})
 public @interface RegisterEntityType {
 
 	/**

@@ -36,9 +36,6 @@ import java.lang.annotation.Target;
 
 import net.minecraft.entity.ai.attributes.Attribute;
 
-@Documented
-@Retention(RUNTIME)
-@Target(FIELD)
 /**
  * Registers the {@link Attribute} that is represented by the field that has
  * this annotation. For the attribute to be registered the class in which the
@@ -47,6 +44,9 @@ import net.minecraft.entity.ai.attributes.Attribute;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
 public @interface RegisterAttribute {
 
 	/**

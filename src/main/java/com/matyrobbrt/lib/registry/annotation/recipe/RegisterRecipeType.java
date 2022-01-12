@@ -36,9 +36,6 @@ import java.lang.annotation.Target;
 
 import com.matyrobbrt.lib.registry.annotation.RegistryHolder;
 
-@Documented
-@Retention(RUNTIME)
-@Target(FIELD)
 /**
  * Registers the {@link RegisterRecipeType} that is represented by the field
  * that has this annotation. For the recipe type to be registered the class in
@@ -47,6 +44,9 @@ import com.matyrobbrt.lib.registry.annotation.RegistryHolder;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
 public @interface RegisterRecipeType {
 
 	/**

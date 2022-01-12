@@ -34,9 +34,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Documented
-@Retention(RUNTIME)
-@Target(ElementType.METHOD)
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.NewRegistry;
+
 /**
  * Used in order to register custom forge registries during {@link NewRegistry}
  * <br>
@@ -48,6 +48,9 @@ import java.lang.annotation.Target;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target(ElementType.METHOD)
 public @interface RegisterCustomRegistry {
 
 }

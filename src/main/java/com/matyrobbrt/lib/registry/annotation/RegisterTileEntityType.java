@@ -34,11 +34,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Documented
-@Retention(RUNTIME)
-@Target({
-		FIELD
-})
+import net.minecraft.tileentity.TileEntityType;
+
 /**
  * Registers the {@link TileEntityType} that is represented by the field that
  * has this annotation. For the TileEntityType to be registered the class in
@@ -47,6 +44,11 @@ import java.lang.annotation.Target;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target({
+		FIELD
+})
 public @interface RegisterTileEntityType {
 
 	/**

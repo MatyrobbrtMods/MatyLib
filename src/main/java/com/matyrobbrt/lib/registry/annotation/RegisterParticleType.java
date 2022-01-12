@@ -34,9 +34,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Documented
-@Retention(RUNTIME)
-@Target(FIELD)
+import net.minecraft.particles.ParticleType;
+
 /**
  * Registers the {@link ParticleType} that is represented by the field that has
  * this annotation. For the ParticleType to be registered the class in which the
@@ -45,6 +44,9 @@ import java.lang.annotation.Target;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
 public @interface RegisterParticleType {
 
 	/**

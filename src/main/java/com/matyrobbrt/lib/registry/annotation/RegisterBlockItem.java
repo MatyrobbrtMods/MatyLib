@@ -34,9 +34,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Documented
-@Retention(RUNTIME)
-@Target(FIELD)
+import net.minecraft.item.BlockItem;
+
 /**
  * Registers the {@link BlockItem} that is represented by the field that has
  * this annotation. For the item to be registered the class in which the field
@@ -45,6 +44,9 @@ import java.lang.annotation.Target;
  * @author matyrobbrt
  *
  */
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
 public @interface RegisterBlockItem {
 
 }
