@@ -132,7 +132,7 @@ public class PatchouliBook {
 		return this;
 	}
 
-	public JsonElement serialize() {
+	public JsonElement serialize(boolean useResourcePack) {
 		JsonObject book = new JsonObject();
 
 		addProperty(book, "name", this.name);
@@ -153,6 +153,8 @@ public class PatchouliBook {
 		addProperty(book, "text_color", this.textColor);
 		addProperty(book, "header_color", this.headerColor);
 		addProperty(book, "nameplate_color", this.nameplateColor);
+
+		book.addProperty("use_resource_pack", useResourcePack);
 
 		JsonObject macrosJson = new JsonObject();
 		this.macros.forEach(macro -> macrosJson.addProperty(macro.key, macro.value));

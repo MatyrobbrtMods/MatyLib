@@ -64,6 +64,7 @@ public abstract class PatchouliProvider implements DataProvider {
 	public final String modid;
 	public final String language;
 	public final String bookName;
+	protected boolean useResourcePack = true;
 
 	public ArrayList<PatchouliEntry> entries = new ArrayList<>();
 	public ArrayList<PatchouliCategory> categories = new ArrayList<>();
@@ -76,7 +77,7 @@ public abstract class PatchouliProvider implements DataProvider {
 	}
 
 	@Override
-	public void run(HashCache pCache) throws IOException {
+	public void run(@NotNull HashCache pCache) throws IOException {
 		try {
 			writeBook(pCache);
 		} catch (Exception e1) {
@@ -97,7 +98,8 @@ public abstract class PatchouliProvider implements DataProvider {
 	private void writeEntries(HashCache cache) {
 		Path outputFolder = generator.getOutputFolder();
 		entries.forEach(entry -> {
-			Path path = outputFolder.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + language
+			final var folder = useResourcePack ? "assets" : "data";
+			Path path = outputFolder.resolve(folder + "/" + modid + "/patchouli_books/" + bookName + "/" + language
 					+ "/entries/" + entry.category + "/" + entry.fileName + ".json");
 			try {
 				DataProvider.save(GSON, cache, entry.serialize(), path);
@@ -114,8 +116,9 @@ public abstract class PatchouliProvider implements DataProvider {
 			if (field.isAnnotationPresent(PatchouliCategoryGen.class)) {
 				field.setAccessible(true);
 				if (field.getType() == PatchouliCategory.class) {
+					final var folder = useResourcePack ? "assets" : "data";
 					PatchouliCategory category = (PatchouliCategory) field.get(this);
-					Path path = outputFolder.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + language
+					Path path = outputFolder.resolve(folder + "/" + modid + "/patchouli_books/" + bookName + "/" + language
 							+ "/categories/" + category.fileName + ".json");
 					try {
 						DataProvider.save(GSON, cache, category.serialize(), path);
@@ -126,7 +129,8 @@ public abstract class PatchouliProvider implements DataProvider {
 			}
 		}
 		categories.forEach(category -> {
-			Path path = outputFolder.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + language
+			final var folder = useResourcePack ? "assets" : "data";
+			Path path = outputFolder.resolve(folder + "/" + modid + "/patchouli_books/" + bookName + "/" + language
 					+ "/categories/" + category.fileName + ".json");
 			try {
 				DataProvider.save(GSON, cache, category.serialize(), path);
@@ -157,7 +161,7 @@ public abstract class PatchouliProvider implements DataProvider {
 			Path path = outputFolder
 					.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + "book.json");
 			try {
-				DataProvider.save(GSON, cache, book.serialize(), path);
+				DataProvider.save(GSON, cache, book.serialize(useResourcePack), path);
 			} catch (IOException e) {
 				LOGGER.error("Couldn't generate book!", path, e);
 			}
