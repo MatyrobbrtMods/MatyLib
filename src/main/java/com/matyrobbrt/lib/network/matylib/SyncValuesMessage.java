@@ -56,7 +56,7 @@ public class SyncValuesMessage implements INetworkMessage {
 
 	public SyncValuesMessage(BlockPos pos, BaseTileEntity te, Direction direction) {
 		this.pos = pos;
-		this.nbt = SyncValue.Helper.writeSyncValues(te.getSyncFields(), te, te.save(new CompoundTag()),
+		this.nbt = SyncValue.Helper.writeSyncValues(te.getSyncFields(), te, te.saveWithoutMetadata(),
 				SyncValue.SyncType.PACKET);
 		this.direction = direction;
 	}

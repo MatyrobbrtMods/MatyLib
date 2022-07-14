@@ -28,6 +28,7 @@
 package com.matyrobbrt.lib.datagen.recipe.vanilla;
 
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -78,7 +79,7 @@ public class KeyIngredient {
 	 * @param key the key of the ingredient
 	 * @param tag the tag of the ingredient
 	 */
-	public KeyIngredient(Character key, net.minecraft.tags.Tag<Item> tag) {
+	public KeyIngredient(Character key, TagKey<Item> tag) {
 		this.key = key;
 		this.ingredient = Ingredient.of(tag);
 	}

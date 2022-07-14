@@ -255,7 +255,7 @@ public @interface SyncValue {
 	default true;
 
 	/**
-	 * Should the variable be saved in {@link BlockEntity#save(CompoundTag)}?
+	 * Should the variable be saved in {@link BlockEntity#saveAdditional(CompoundTag)}?
 	 *
 	 * @return true if we should save on write
 	 */
