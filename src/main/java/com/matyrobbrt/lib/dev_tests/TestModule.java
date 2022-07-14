@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-@Module(id = @RL(modid = MatyLib.MOD_ID, path = "test"))
+//@Module(id = @RL(modid = MatyLib.MOD_ID, path = "test"))
 public class TestModule extends ModuleHelper implements IModule {
 
 	@AutoBlockItem

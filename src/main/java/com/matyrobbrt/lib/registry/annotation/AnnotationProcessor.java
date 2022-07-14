@@ -46,6 +46,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.minecraftforge.registries.NewRegistryEvent;
 import org.objectweb.asm.Type;
 
 import com.google.common.collect.Lists;
@@ -398,7 +399,7 @@ public class AnnotationProcessor {
 				outputMap);
 	}
 
-	private void registerCustomRegistries(final RegistryEvent.NewRegistry event) {
+	private void registerCustomRegistries(final NewRegistryEvent event) {
 		ReflectionHelper
 				.getMethodsAnnotatedWith(Lists.newArrayList(registryClasses.keySet()), RegisterCustomRegistry.class)
 				.forEach(method -> {

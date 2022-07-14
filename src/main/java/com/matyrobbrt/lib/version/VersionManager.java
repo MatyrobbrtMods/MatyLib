@@ -33,6 +33,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
@@ -53,6 +54,10 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 
+/**
+ * @deprecated such an annoying system for users... use the Forge system
+ */
+@Deprecated
 @EventBusSubscriber(modid = MatyLib.MOD_ID, bus = Bus.MOD)
 public class VersionManager {
 
@@ -62,7 +67,7 @@ public class VersionManager {
 
 	@SubscribeEvent
 	public static void processIMC(final InterModProcessEvent event) {
-		event.getIMCStream().filter(msg -> msg.method() == VERSIONS_METHOD).forEach(imc -> {
+		event.getIMCStream().filter(msg -> Objects.equals(msg.method(), VERSIONS_METHOD)).forEach(imc -> {
 			Object msg = imc.messageSupplier().get();
 			if (msg instanceof String string) {
 				VersionList version = processVersion(string);
@@ -75,8 +80,6 @@ public class VersionManager {
 
 	@SubscribeEvent
 	public static void onPreInit(final FMLConstructModEvent event) {
-		MOD_VERSIONS.put(MatyLib.MOD_ID,
-				processVersion("https://raw.githubusercontent.com/Matyrobbrt/MatyLib/1.18.1/versions.json"));
 	}
 
 	private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().excludeFieldsWithoutExposeAnnotation()
@@ -97,6 +100,8 @@ public class VersionManager {
 
 		@SubscribeEvent
 		public static void handle(final PlayerLoggedInEvent event) {
+			if (true)
+				return;
 			Player player = event.getPlayer();
 			ModList.get().getModFiles().forEach(modFile -> {
 				modFile.getMods().forEach(modInfo -> {

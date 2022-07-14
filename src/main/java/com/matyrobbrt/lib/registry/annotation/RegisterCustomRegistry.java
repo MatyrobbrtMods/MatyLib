@@ -34,6 +34,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+@Deprecated(forRemoval = true)
 @Documented
 @Retention(RUNTIME)
 @Target(ElementType.METHOD)
@@ -41,7 +42,7 @@ import java.lang.annotation.Target;
  * Used in order to register custom forge registries during {@link NewRegistry}
  * <br>
  * In order for it to work, you need to annotate a method that takes in
- * <strong>just<strong> a {@link RegistryEvent.NewRegistry} as a parameter with
+ * <strong>just<strong> a {@link net.minecraftforge.registries.NewRegistryEvent} as a parameter with
  * this annotation. <br>
  * {@link RegistryHolder} is <strong>still needed</strong>
  *

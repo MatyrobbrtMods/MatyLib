@@ -28,7 +28,11 @@
 /**
  * This package holds (and handles) all of the Registry Annotations
  *
+ * TODO redo modules maybe during a 1.19 port, if one every happens, and remove annotation registering
+ *
  * @author matyrobbrt
+ * @deprecated 1.18.2 made this feature unusable, use {@link net.minecraftforge.registries.DeferredRegister} instead
  */
+@Deprecated(forRemoval = true)
 @net.minecraft.MethodsReturnNonnullByDefault
 package com.matyrobbrt.lib.registry.annotation;

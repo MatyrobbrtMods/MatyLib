@@ -27,22 +27,27 @@
 
 package com.matyrobbrt.lib.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import com.google.common.collect.Maps;
 import com.matyrobbrt.lib.MatyLib;
-
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
-
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
+/**
+ * @deprecated use {@link net.minecraftforge.common.extensions.IForgeBlock#getToolModifiedState(BlockState, UseOnContext, ToolAction, boolean)}
+ */
+@Deprecated(forRemoval = true, since = "1.18.2")
 @EventBusSubscriber(modid = MatyLib.MOD_ID, bus = Bus.MOD)
 public class StrippingMap {
 

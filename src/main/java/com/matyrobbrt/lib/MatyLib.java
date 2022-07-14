@@ -27,20 +27,22 @@
 
 package com.matyrobbrt.lib;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.matyrobbrt.lib.compat.curios.CuriosCompat;
 import com.matyrobbrt.lib.compat.top.TheOneProbeCompat;
 import com.matyrobbrt.lib.dev_tests.MatyLibDevTests;
 import com.matyrobbrt.lib.network.matylib.MatyLibNetwork;
-import com.matyrobbrt.lib.registry.annotation.AnnotationProcessor;
+import com.matyrobbrt.lib.registry.builder.ItemBuilder;
 import com.matyrobbrt.lib.util.ModIDs;
-
+import com.matyrobbrt.lib.wrench.WrenchItem;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(MatyLib.MOD_ID)
 public class MatyLib extends ModSetup {
@@ -55,7 +57,6 @@ public class MatyLib extends ModSetup {
 	public static final String MOD_ID = "matylib";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-	public static final AnnotationProcessor ANN_PROCESSOR = new AnnotationProcessor(MOD_ID);
 
 	static {
 		// ANN_PROCESSOR.ignoreRegistryType(Item.class);
@@ -67,16 +68,14 @@ public class MatyLib extends ModSetup {
 			registered = true;
 			INSTANCE = this;
 		}
-		ANN_PROCESSOR.afterInit(() -> {
-			if (isProduction()) {
-				MatyLibDevTests.unregisterTests();
-			}
-		});
-	}
+		if (isProduction()) {
+			MatyLibDevTests.unregisterTests();
+		}
 
-	@Override
-	public AnnotationProcessor annotationProcessor() {
-		return ANN_PROCESSOR;
+		final var itemRegister = DeferredRegister.create(Registry.ITEM_REGISTRY, MOD_ID);
+		itemRegister.register("wrench", () -> new ItemBuilder<>(WrenchItem::new).tab(CreativeModeTab.TAB_MISC)
+				.build());
+		itemRegister.register(modBus);
 	}
 
 	@Override

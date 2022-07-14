@@ -34,11 +34,15 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * @deprecated 1.18.2 made this feature unusable, use {@link net.minecraftforge.registries.DeferredRegister} instead
+ */
 @Documented
 @Retention(RUNTIME)
 @Target({
 		TYPE
 })
+@Deprecated(forRemoval = true)
 public @interface RegistryHolder {
 
 	/**

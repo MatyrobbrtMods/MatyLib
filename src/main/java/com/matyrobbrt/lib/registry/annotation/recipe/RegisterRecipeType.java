@@ -36,6 +36,7 @@ import java.lang.annotation.Target;
 
 import com.matyrobbrt.lib.registry.annotation.RegistryHolder;
 
+@Deprecated(forRemoval = true)
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)

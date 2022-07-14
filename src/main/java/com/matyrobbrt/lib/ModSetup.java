@@ -27,13 +27,7 @@
 
 package com.matyrobbrt.lib;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import com.matyrobbrt.lib.registry.annotation.AnnotationProcessor;
-
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,6 +36,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Base class for mod main classes
@@ -68,12 +65,6 @@ public abstract class ModSetup {
 
 		clientSetup().ifPresent(sup -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> sup::get));
 
-		AnnotationProcessor ap = annotationProcessor();
-
-		if (ap != null) {
-			ap.register(modBus);
-		}
-
 		forgeBus = MinecraftForge.EVENT_BUS;
 		forgeBus.register(this);
 	}
@@ -84,10 +75,6 @@ public abstract class ModSetup {
 
 	public Optional<Supplier<ClientSetup>> clientSetup() {
 		return Optional.empty();
-	}
-
-	public AnnotationProcessor annotationProcessor() {
-		return new AnnotationProcessor(modId);
 	}
 
 	public void onCommonSetup(final FMLCommonSetupEvent event) {

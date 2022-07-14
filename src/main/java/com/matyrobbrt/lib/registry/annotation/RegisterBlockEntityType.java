@@ -34,6 +34,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+@Deprecated(forRemoval = true)
 @Documented
 @Retention(RUNTIME)
 @Target({

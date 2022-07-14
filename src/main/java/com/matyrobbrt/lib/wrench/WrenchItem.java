@@ -28,22 +28,17 @@
 package com.matyrobbrt.lib.wrench;
 
 import com.matyrobbrt.lib.MatyLib;
-import com.matyrobbrt.lib.registry.annotation.RegisterItem;
-import com.matyrobbrt.lib.registry.annotation.RegistryHolder;
-import com.matyrobbrt.lib.registry.builder.ItemBuilder;
-
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@RegistryHolder(modid = MatyLib.MOD_ID)
 public class WrenchItem extends Item {
 
-	@RegisterItem("wrench")
-	public static final WrenchItem MATYLIB_WRENCH_ITEM = new ItemBuilder<>(WrenchItem::new).tab(CreativeModeTab.TAB_MISC)
-			.build();
+	public static final RegistryObject<WrenchItem> MATYLIB_WRENCH_ITEM = RegistryObject.create(new ResourceLocation(MatyLib.MOD_ID, "wrench"), ForgeRegistries.ITEMS);
 
 	public WrenchItem(Properties pProperties) {
 		super(pProperties);

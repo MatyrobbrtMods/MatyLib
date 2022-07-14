@@ -4,7 +4,6 @@
 	"compatibilityLevel": "JAVA_17",
 	"refmap": "matylib.refmap.json",
 	"mixins": [
-		"ResourcePackTypeExtender"
 	],
 	"minVersion": "0.8"
 }
