@@ -35,6 +35,7 @@ import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliEntry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -100,7 +101,7 @@ public abstract class PatchouliProvider implements DataProvider {
 		entries.forEach(entry -> {
 			final var folder = useResourcePack ? "assets" : "data";
 			Path path = outputFolder.resolve(folder + "/" + modid + "/patchouli_books/" + bookName + "/" + language
-					+ "/entries/" + entry.category + "/" + entry.fileName + ".json");
+					+ "/entries/" + new ResourceLocation(entry.category).getPath() + "/" + entry.fileName + ".json");
 			try {
 				DataProvider.save(GSON, cache, entry.serialize(), path);
 			} catch (IOException e) {
