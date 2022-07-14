@@ -33,6 +33,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.matyrobbrt.lib.datagen.patchouli.vars.StringItemStack;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
@@ -82,7 +83,7 @@ public class PatchouliCategory {
 		object.addProperty("description", description);
 
 		if (icon != null) {
-			object.addProperty("icon", icon.asItem().getRegistryName().toString());
+			object.addProperty("icon", Registry.ITEM.getKey(icon.asItem()).toString());
 		}
 
 		if (textureIcon != null) {

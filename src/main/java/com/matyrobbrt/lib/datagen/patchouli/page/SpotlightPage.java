@@ -30,6 +30,7 @@ package com.matyrobbrt.lib.datagen.patchouli.page;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
@@ -53,7 +54,7 @@ public class SpotlightPage implements IPatchouliPage {
 		JsonObject object = new JsonObject();
 		
 		object.addProperty("type", getType());
-		object.addProperty("item", this.item.getRegistryName().toString());
+		object.addProperty("item", Registry.ITEM.getKey(item).toString());
 		object.addProperty("text", this.text);
 		
 		return object;

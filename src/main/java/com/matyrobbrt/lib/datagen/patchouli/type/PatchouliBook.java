@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
@@ -136,14 +137,18 @@ public class PatchouliBook {
 
 		addProperty(book, "name", this.name);
 		addProperty(book, "landing_text", this.landingText);
-		addProperty(book, "model", this.model.toString());
+		if (model != null)
+			book.addProperty("model", this.model.toString());
 		addProperty(book, "creative_tab", this.tab);
-		addProperty(book, "book_texture", this.texture.toString());
-		addProperty(book, "index_icon", this.indexIcon.asItem().getRegistryName().toString());
+		if (model != null)
+			book.addProperty("book_texture", this.texture.toString());
+		if (indexIcon != null)
+			book.addProperty("index_icon", Registry.ITEM.getKey(indexIcon.asItem()).toString());
 		book.addProperty("show_progress", this.showProgress);
 		book.addProperty("version", this.version);
 
-		addProperty(book, "crafting_texture", this.craftingTexture.toString());
+		if (craftingTexture != null)
+			book.addProperty("crafting_texture", craftingTexture.toString());
 
 		addProperty(book, "text_color", this.textColor);
 		addProperty(book, "header_color", this.headerColor);

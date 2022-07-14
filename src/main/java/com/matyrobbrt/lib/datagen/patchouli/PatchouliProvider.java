@@ -27,6 +27,19 @@
 
 package com.matyrobbrt.lib.datagen.patchouli;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliBook;
+import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliCategory;
+import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliEntry;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -35,21 +48,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliBook;
-import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliCategory;
-import com.matyrobbrt.lib.datagen.patchouli.type.PatchouliEntry;
-
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 
 /**
  * Provider for Patchouli Data Generators
@@ -116,7 +114,7 @@ public abstract class PatchouliProvider implements DataProvider {
 			if (field.isAnnotationPresent(PatchouliCategoryGen.class)) {
 				field.setAccessible(true);
 				if (field.getType() == PatchouliCategory.class) {
-					PatchouliCategory category = (PatchouliCategory) field.get(clazz);
+					PatchouliCategory category = (PatchouliCategory) field.get(this);
 					Path path = outputFolder.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + language
 							+ "/categories/" + category.fileName + ".json");
 					try {
@@ -138,36 +136,42 @@ public abstract class PatchouliProvider implements DataProvider {
 		});
 	}
 
-	private void writeBook(HashCache cache) throws Exception {
-		Path outputFolder = generator.getOutputFolder();
+	@Nullable
+	protected PatchouliBook getBook() throws Exception {
 		Class<?> clazz = this.getClass();
 		for (Field field : clazz.getDeclaredFields()) {
 			if (field.isAnnotationPresent(PatchouliBookGen.class)) {
 				field.setAccessible(true);
 				if (field.getType() == PatchouliBook.class) {
-					PatchouliBook book = (PatchouliBook) field.get(clazz);
-					Path path = outputFolder
-							.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + "book.json");
-					try {
-						DataProvider.save(GSON, cache, book.serialize(), path);
-					} catch (IOException e) {
-						LOGGER.error("Couldn't generate book!", path, e);
-					}
+					return  (PatchouliBook) field.get(this);
 				}
+			}
+		}
+		return null;
+	}
+
+	private void writeBook(HashCache cache) throws Exception {
+		final var book = getBook();
+		if (book != null) {
+			Path outputFolder = generator.getOutputFolder();
+			Path path = outputFolder
+					.resolve("data/" + modid + "/patchouli_books/" + bookName + "/" + "book.json");
+			try {
+				DataProvider.save(GSON, cache, book.serialize(), path);
+			} catch (IOException e) {
+				LOGGER.error("Couldn't generate book!", path, e);
 			}
 		}
 	}
 
-	@Nullable
 	public void addEntries() {
 	}
 
-	@Nullable
 	public void addCategories() {
 	}
 
 	@Override
-	public String getName() { return "PatchouliGenProvider"; }
+	public @NotNull String getName() { return "PatchouliGenProvider"; }
 
 	/**
 	 * Annotate a {@link PatchouliCategory} with this annotation in order to
