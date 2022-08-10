@@ -29,40 +29,37 @@ package com.matyrobbrt.lib.datagen.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 /**
  * Class for defining tag inputs of recipe
- * @author matyrobbrt
  *
+ * @author matyrobbrt
  */
-public class TagInput implements IIngredient {
-	
-	private final Tag<Item> tag;
-	private final int count;
+public record TagInput(TagKey<Item> tag, int count) implements IIngredient {
 
 	/**
 	 * Creates a new recipe tag input
-	 * @param tag the tag of the input
+	 *
+	 * @param tag   the tag of the input
 	 * @param count the count of the input
 	 */
-	public TagInput(Tag<Item> tag, int count) {
-		this.tag = tag;
-		this.count = count;
+	public TagInput {
 	}
 
 	/**
 	 * Gets the tag of the input
+	 *
 	 * @return the tag of the input
 	 */
-	public Tag<Item> getTag() {
+	public TagKey<Item> getTag() {
 		return this.tag;
 	}
 
 	/**
 	 * Gets the count of the input
+	 *
 	 * @return the count of the input
 	 */
 	public int getCount() {

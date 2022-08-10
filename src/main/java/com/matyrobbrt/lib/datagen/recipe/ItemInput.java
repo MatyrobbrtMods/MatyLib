@@ -30,6 +30,7 @@ package com.matyrobbrt.lib.datagen.recipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.ItemLike;
 
 public class ItemInput implements IIngredient {
@@ -45,7 +46,7 @@ public class ItemInput implements IIngredient {
 	@Override
 	public JsonElement toJson() {
 		JsonObject obj = new JsonObject();
-		obj.addProperty("item", item.asItem().getRegistryName().toString());
+		obj.addProperty("item", Registry.ITEM.getKey(item.asItem()).toString());
 		obj.addProperty("count", count);
 		return obj;
 	}

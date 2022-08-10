@@ -33,6 +33,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.matyrobbrt.lib.datagen.patchouli.page.IPatchouliPage;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
@@ -85,7 +86,7 @@ public class PatchouliEntry {
 		object.addProperty("category", this.category);
 
 		if (this.icon != null)
-			object.addProperty("icon", this.icon.getRegistryName().toString());
+			object.addProperty("icon", Registry.ITEM.getKey(icon).toString());
 
 		JsonArray pagesElement = new JsonArray();
 		this.pages.forEach(page -> pagesElement.add(page.serialize()));

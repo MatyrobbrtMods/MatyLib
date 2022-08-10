@@ -28,12 +28,12 @@
 package com.matyrobbrt.lib.util.helper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class NBTHelper {
@@ -113,7 +113,7 @@ public class NBTHelper {
 	}
 
 	public static void setItem(ItemStack stack, String key, ItemLike item) {
-		setString(stack, key, item.asItem().getRegistryName().toString());
+		setString(stack, key, Registry.ITEM.getKey(item.asItem()).toString());
 	}
 
 }

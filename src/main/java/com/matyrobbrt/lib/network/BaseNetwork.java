@@ -27,9 +27,6 @@
 
 package com.matyrobbrt.lib.network;
 
-import java.util.Optional;
-import java.util.function.Function;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -37,10 +34,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * A base class for networks
@@ -50,23 +49,23 @@ import net.minecraftforge.network.simple.SimpleChannel;
  */
 public abstract class BaseNetwork {
 	
-	protected static int ID = 0;
+	protected int id = 0;
 
-	protected static int nextId() {
-		return ID++;
+	protected int nextId() {
+		return id++;
 	}
 
-	protected static <M extends INetworkMessage> void registerClientToServer(SimpleChannel channel, Class<M> type,
+	protected <M extends INetworkMessage> void registerClientToServer(SimpleChannel channel, Class<M> type,
 			Function<FriendlyByteBuf, M> decoder) {
 		registerMessage(channel, type, decoder, NetworkDirection.PLAY_TO_SERVER);
 	}
 
-	protected static <M extends INetworkMessage> void registerServerToClient(SimpleChannel channel, Class<M> type,
+	protected <M extends INetworkMessage> void registerServerToClient(SimpleChannel channel, Class<M> type,
 			Function<FriendlyByteBuf, M> decoder) {
 		registerMessage(channel, type, decoder, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
-	private static <M extends INetworkMessage> void registerMessage(SimpleChannel channel, Class<M> msgClass,
+	private <M extends INetworkMessage> void registerMessage(SimpleChannel channel, Class<M> msgClass,
 			Function<FriendlyByteBuf, M> decoder, NetworkDirection direction) {
 		channel.registerMessage(nextId(), msgClass, INetworkMessage::encode, decoder, INetworkMessage::handle,
 				Optional.of(direction));

@@ -29,7 +29,6 @@ package com.matyrobbrt.lib;
 
 import com.matyrobbrt.lib.compat.curios.CuriosCompat;
 import com.matyrobbrt.lib.compat.top.TheOneProbeCompat;
-import com.matyrobbrt.lib.dev_tests.MatyLibDevTests;
 import com.matyrobbrt.lib.network.matylib.MatyLibNetwork;
 import com.matyrobbrt.lib.registry.builder.ItemBuilder;
 import com.matyrobbrt.lib.util.ModIDs;
@@ -57,19 +56,11 @@ public class MatyLib extends ModSetup {
 	public static final String MOD_ID = "matylib";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
-
-	static {
-		// ANN_PROCESSOR.ignoreRegistryType(Item.class);
-	}
-
 	public MatyLib() {
 		super(MOD_ID);
 		if (!registered) {
 			registered = true;
 			INSTANCE = this;
-		}
-		if (isProduction()) {
-			MatyLibDevTests.unregisterTests();
 		}
 
 		final var itemRegister = DeferredRegister.create(Registry.ITEM_REGISTRY, MOD_ID);
@@ -83,7 +74,7 @@ public class MatyLib extends ModSetup {
 		patchouliLoaded = ModList.get().isLoaded(ModIDs.PATCHOULI);
 		curiosLoaded = ModList.get().isLoaded(ModIDs.CURIOS);
 
-		MatyLibNetwork.init();
+		new MatyLibNetwork().init();
 	}
 
 	@Override

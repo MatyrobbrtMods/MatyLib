@@ -27,6 +27,7 @@
 
 package com.matyrobbrt.lib.datagen.patchouli.vars;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 
 public class StringItemStack {
@@ -39,7 +40,7 @@ public class StringItemStack {
 	
 	@Override
 	public String toString() {
-		return this.stack.getItem().getRegistryName().toString() + "#" + this.stack.getCount() + this.stack.getOrCreateTag().toString();
+		return Registry.ITEM.getKey(stack.getItem()) + "#" + this.stack.getCount() + this.stack.getOrCreateTag().toString();
 	}
 
 }

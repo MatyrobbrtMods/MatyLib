@@ -27,14 +27,8 @@
 
 package com.matyrobbrt.lib.scheduler;
 
-import java.util.function.Consumer;
-
-import javax.annotation.concurrent.ThreadSafe;
-
 import com.matyrobbrt.lib.MatyLib;
-
 import net.minecraft.world.level.Level;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -42,16 +36,19 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.function.Consumer;
+
 @ThreadSafe
 @Mod.EventBusSubscriber(modid = MatyLib.MOD_ID, bus = Bus.MOD)
 public final class WorldTickScheduler extends Scheduler<Level> {
 
-	private void serverTicks(final TickEvent.WorldTickEvent event) {
+	private void serverTicks(final TickEvent.LevelTickEvent event) {
 		if (event.phase == Phase.START) {
 			Consumer<Level> action = scheduledActions.poll();
 			do {
 				if (action != null) {
-					action.accept(event.world);
+					action.accept(event.level);
 					action = scheduledActions.poll();
 				}
 			} while (action != null);

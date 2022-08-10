@@ -39,7 +39,7 @@ public class MatyLibNetwork extends BaseNetwork {
 
 	public static final SimpleChannel CHANNEL = newSimpleChannel("channel");
 
-	public static void init() {
+	public void init() {
 		registerServerToClient(CHANNEL, SyncValuesMessage.class, SyncValuesMessage::decode);
 		registerClientToServer(CHANNEL, SyncValuesMessage.class, SyncValuesMessage::decode);
 	}

@@ -27,16 +27,14 @@
 
 package com.matyrobbrt.lib.registry;
 
-import java.util.function.Supplier;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class BetterRegistryObject<T extends IForgeRegistryEntry<?>> implements Supplier<T> {
+import java.util.function.Supplier;
+
+public class BetterRegistryObject<T> implements Supplier<T> {
 
 	private final Supplier<T> sup;
 	private ResourceLocation name;
